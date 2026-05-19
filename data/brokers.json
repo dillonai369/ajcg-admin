@@ -1,0 +1,1068 @@
+[
+  {
+    "slug": "joey-batliner",
+    "page_slug": "broker-joey-batliner",
+    "name": "Joey Batliner",
+    "title": "Founder \u00b7 Multifamily Broker",
+    "email": "jbatliner@ajcommercialgroup.com",
+    "phone": "(224) 401-9152",
+    "phone_raw": "2244019152",
+    "photo_url": "assets/team/joey-hero.jpg",
+    "card_photo_url": "assets/team/joey-card.jpg",
+    "bio": "Joey is the Co-Founder of AJ Commercial Group and an active multifamily investor with extensive experience in the Chicago multifamily market. A former collegiate golfer, Joey developed the discipline, focus, and competitive mindset that now define his approach to brokerage and investing. Known for his expertise in underwriting, deal analysis, and market knowledge, he helps clients understand both the current value and long-term potential of their assets.\n\nBefore co-founding AJ Commercial Group, Joey was part of one of the highest-producing multifamily brokerage teams in Chicago, where he played a key role in analyzing transactions and contributing to significant sales volume across the market. His analytical approach and deep understanding of multifamily assets have made him a trusted advisor to property owners and investors throughout Chicagoland.",
+    "track_record": [
+      {
+        "property_slug": "property-toledo-river-birch",
+        "name": "River Birch Apartments",
+        "subtitle": "224-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Toledo-OH-224-unts-0b6dec9d-2880w.jpg"
+      },
+      {
+        "property_slug": "property-mississippi-lofts-1",
+        "name": "Mississippi Lofts",
+        "subtitle": "55-Unit Mixed-Use",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Capture-2880w.jpg"
+      },
+      {
+        "property_slug": "property-pekin-place",
+        "name": "Pekin Place Apartments",
+        "subtitle": "36-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Screenshot+2025-07-11+142454-2880w.png"
+      },
+      {
+        "property_slug": "property-879881-village-quarter-rd-3",
+        "name": "879\u2013881 Village Quarter Rd",
+        "subtitle": "26-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/West-Dundee-IL-6-unit-scaled-2880w.jpg"
+      },
+      {
+        "property_slug": "property-503507-dorchester-ct-4",
+        "name": "503\u2013507 Dorchester Ct",
+        "subtitle": "24-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/10002334_1_0-2880w.jpg"
+      },
+      {
+        "property_slug": "property-carolyn-apartments-5",
+        "name": "Carolyn Apartments",
+        "subtitle": "18-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Eureka+18+units-2880w.jpg"
+      },
+      {
+        "property_slug": "property-744-gillette-ave-6",
+        "name": "744 Gillette Ave",
+        "subtitle": "16-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/16-Unit---Aurora-2880w.png"
+      },
+      {
+        "property_slug": "property-aurora-best-place",
+        "name": "2091 & 2121 Best Place",
+        "subtitle": "16-Unit Multifamily Portfolio",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Aurora-IL-16-unit-2880w.png"
+      },
+      {
+        "property_slug": "property-2001-s-5th-ave-8",
+        "name": "2001 S 5th Ave",
+        "subtitle": "12-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Maywood+12+Units-2880w.png"
+      },
+      {
+        "property_slug": "property-chicago-ridge-central",
+        "name": "10608-10610 S Central Ave",
+        "subtitle": "12-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/ChatGPT+Image+Oct+3-+2025-+03_48_11+PM-2880w.png"
+      },
+      {
+        "property_slug": "property-420-washington-st-10",
+        "name": "420 Washington St",
+        "subtitle": "12-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/IMG_0454-2880w.jpg"
+      },
+      {
+        "property_slug": "property-round-lake-washington",
+        "name": "534 E Washington Street",
+        "subtitle": "12-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/12-Unit---Round-Lake-Park-2a52a50c-2880w.jpg"
+      },
+      {
+        "property_slug": "property-7349-175th-st-12",
+        "name": "7349 175th St",
+        "subtitle": "12-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Screenshot-2025-06-18-151712-6c36d3bd-5c99d67b-2880w.png"
+      },
+      {
+        "property_slug": "property-2415-24th-pl-13",
+        "name": "2415 24th Pl",
+        "subtitle": "12-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/North+Chicago-2880w.png"
+      },
+      {
+        "property_slug": "property-33-w-naperville-rd-14",
+        "name": "33 W Naperville Rd",
+        "subtitle": "12-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/12+Unit+-+Westmont-2880w.png"
+      },
+      {
+        "property_slug": "property-evergreen-park-93rd",
+        "name": "3158 West 93rd Street",
+        "subtitle": "11-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Evergreen-Park--11-Unit-2880w.png"
+      },
+      {
+        "property_slug": "property-7615-roosevelt-rd-16",
+        "name": "7615 Roosevelt Rd",
+        "subtitle": "10-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/IMG_9196--281-29-2880w.jpg"
+      },
+      {
+        "property_slug": "property-4848-83rd-st-17",
+        "name": "4848 83rd St",
+        "subtitle": "9-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/image000000-a8744d7e-2880w.jpeg"
+      },
+      {
+        "property_slug": "property-32-w-burlington-ave-18",
+        "name": "32 W Burlington Ave",
+        "subtitle": "8-Unit Office Building",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Westmont+-+8+units+office-2880w.jpg"
+      },
+      {
+        "property_slug": "property-1928-jackson-ave-19",
+        "name": "1928 Jackson Ave",
+        "subtitle": "8-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Evanston+8+Units-2880w.jpeg"
+      },
+      {
+        "property_slug": "property-marengo-8-unit-20",
+        "name": "Marengo 8-Unit Multifamily",
+        "subtitle": "8-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/IMG_7178-2880w.jpg"
+      },
+      {
+        "property_slug": "property-1107-koch-st-21",
+        "name": "1107 Koch St",
+        "subtitle": "8-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/pekin---8-units-2880w.png"
+      },
+      {
+        "property_slug": "property-1640-mark-ave-22",
+        "name": "1640 Mark Ave",
+        "subtitle": "8-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/IMG_5313-2880w.jpg"
+      },
+      {
+        "property_slug": "property-805807-n-wilke-rd-23",
+        "name": "805\u2013807 N Wilke Rd",
+        "subtitle": "8-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/8+unit+-+Arlington+Hieghts-2880w.jpg"
+      },
+      {
+        "property_slug": "property-16601-jean-ln-24",
+        "name": "16601 Jean Ln",
+        "subtitle": "7-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/IMG_5171-scaled-e1722450779883-2880w.jpg"
+      },
+      {
+        "property_slug": "property-1501-s-5th-ave-25",
+        "name": "1501 S 5th Ave",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Maywood-6-Units-2880w.png"
+      },
+      {
+        "property_slug": "property-5201-n-reserve-ave-26",
+        "name": "5201 N Reserve Ave",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/IMG_0213-2880w.jpg"
+      },
+      {
+        "property_slug": "property-2216-w-chicago-ave-27",
+        "name": "2216 W Chicago Ave",
+        "subtitle": "6-Unit Mixed-Use",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Screenshot+2025-10-21+091034-2880w.png"
+      },
+      {
+        "property_slug": "property-4335-lindenwood-dr-28",
+        "name": "4335 Lindenwood Dr",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/4335-Lindenwood-Dr_EDIT-45_Drone-2880w.png"
+      },
+      {
+        "property_slug": "property-13959-dori-lane-29",
+        "name": "13959 Dori Lane",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Screenshot-2025-05-29-162357-2880w.png"
+      },
+      {
+        "property_slug": "property-glen-ellyn-surrey",
+        "name": "1185 Surrey Drive",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Screenshot+2025-07-11+112741-2880w.png"
+      },
+      {
+        "property_slug": "property-chicago-potawatomie",
+        "name": "5200 N Potawatomie Ave",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/6-Unit---Ohare-2880w.jpg"
+      },
+      {
+        "property_slug": "property-320-lincoln-ct-32",
+        "name": "320 Lincoln Ct",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/320-Lincoln-2880w.jpg"
+      },
+      {
+        "property_slug": "property-justice-84th",
+        "name": "8160 W 84th Street",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/thumbnail_IMG_3198-fcde7a00-ce1c06ef-2880w.jpg"
+      },
+      {
+        "property_slug": "property-12413-maple-ave-34",
+        "name": "12413 Maple Ave",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/6+unit+-+Blue+Island.jpg"
+      },
+      {
+        "property_slug": "property-579-pershing-ave-35",
+        "name": "579 Pershing Ave",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Glen-Ellyn-IL-6-unit-scaled-2880w.jpg"
+      },
+      {
+        "property_slug": "property-4011-elm-st-36",
+        "name": "4011 Elm St",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Screenshot+2025-05-29+162307-2880w.png"
+      },
+      {
+        "property_slug": "property-4106-charleston-rd-37",
+        "name": "4106 Charleston Rd",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Screenshot+2025-10-03+111431-2880w.png"
+      },
+      {
+        "property_slug": "property-12940-hoyne-ave-38",
+        "name": "12940 Hoyne Ave",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Screenshot+2025-09-23+102822-2880w.png"
+      },
+      {
+        "property_slug": "property-918-w-eastwood-ave-39",
+        "name": "918 W Eastwood Ave",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/0e64da2c-1936-4d63-bd08-cc3ad99c1723-c6e153b1-2880w.png"
+      },
+      {
+        "property_slug": "property-7801-oak-park-ave-40",
+        "name": "7801 Oak Park Ave",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Screenshot+2025-07-07+203646-2880w.png"
+      },
+      {
+        "property_slug": "property-6409-country-ridge-dr-41",
+        "name": "6409 Country Ridge Dr",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/rsw_719h_689-2880w.webp"
+      },
+      {
+        "property_slug": "property-9120-lincoln-ct-42",
+        "name": "9120 Lincoln Ct",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/6+Unit+-+Orland+Park-2880w.jpg"
+      },
+      {
+        "property_slug": "property-6501-18th-st-44",
+        "name": "6501 18th St",
+        "subtitle": "5-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Berwyn+5+unit-2880w.png"
+      },
+      {
+        "property_slug": "property-2207-n-mango-ave-45",
+        "name": "2207 N Mango Ave",
+        "subtitle": "5-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Belmont-Cragin--Chicago---5-units-592fab98-2880w.png"
+      },
+      {
+        "property_slug": "property-oak-lawn-5-unit-46",
+        "name": "Oak Lawn 5-Unit Multifamily",
+        "subtitle": "5-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/5+Unit+-+Oak+Lawn-2880w.jpg"
+      },
+      {
+        "property_slug": "property-tinley-park-ridgeland",
+        "name": "17510 Ridgeland Avenue",
+        "subtitle": "4-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/10829575_0-3849d2d0-2880w.jpg"
+      },
+      {
+        "property_slug": "property-2650-164th-pl-48",
+        "name": "2650 164th Pl",
+        "subtitle": "4-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/4-Unit---Hammond-Indiana-2880w.jpg"
+      },
+      {
+        "property_slug": "property-highland-park-walker",
+        "name": "366 Walker Avenue",
+        "subtitle": "4-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/highland-park---4-units-2880w.png"
+      },
+      {
+        "property_slug": "property-joliet-kungs-way",
+        "name": "509 Kungs Way",
+        "subtitle": "4-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/IMG_6881-2880w.jpg"
+      },
+      {
+        "property_slug": "property-bridgeview-80th",
+        "name": "7327 W 80th Street",
+        "subtitle": "4-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/4-Unit---Bridgeview-1384c08d-2880w.png"
+      },
+      {
+        "property_slug": "property-317-s-hale-st-52",
+        "name": "317 S Hale St",
+        "subtitle": "3-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/3-Unit---Addison-2880w.jpg"
+      },
+      {
+        "property_slug": "property-roselle-terry",
+        "name": "108 Terry Drive",
+        "subtitle": "3-Unit Property",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/terry-2880w.jpg"
+      },
+      {
+        "property_slug": "property-2130-w-potomac-ave-54",
+        "name": "2130 W Potomac Ave",
+        "subtitle": "Duplex",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Wicker+Park+Duplex-2880w.png"
+      },
+      {
+        "property_slug": "property-1100-s-state-st-55",
+        "name": "1100 S State St",
+        "subtitle": "7-Unit Mixed-Use",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Screenshot+2025-07-17+091509-2880w.png"
+      },
+      {
+        "property_slug": "property-542-n-yale-ave-56",
+        "name": "542 N Yale Ave",
+        "subtitle": "2-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/542-Yale-a1b2a6d6-2880w.jpg"
+      },
+      {
+        "property_slug": "property-waterbury-apartments-1005",
+        "name": "Waterbury Apartments",
+        "subtitle": "24-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/16-Unit---Aurora-2880w.png"
+      },
+      {
+        "property_slug": "property-1281-1285-abbott-drive-1012",
+        "name": "1281-1285 Abbott Drive",
+        "subtitle": "12-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/16-Unit---Aurora-2880w.png"
+      },
+      {
+        "property_slug": "property-1016-e-division-st-1025",
+        "name": "1016 E. Division St",
+        "subtitle": "12-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/assets/properties/1016-e-division-lombard.jpg"
+      },
+      {
+        "property_slug": "property-1111-1123-broadway-ave-1026",
+        "name": "1111-1123 Broadway Ave",
+        "subtitle": "18-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/16-Unit---Aurora-2880w.png"
+      },
+      {
+        "property_slug": "property-6607-181st-street-1027",
+        "name": "6607 181st Street",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/16-Unit---Aurora-2880w.png"
+      },
+      {
+        "property_slug": "property-3642-147th-pl-1028",
+        "name": "3642 147th Pl",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/16-Unit---Aurora-2880w.png"
+      },
+      {
+        "property_slug": "property-1529-homestead-1052",
+        "name": "1529 Homestead",
+        "subtitle": "3-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/16-Unit---Aurora-2880w.png"
+      }
+    ],
+    "is_partner": true,
+    "canonical_url": "https://www.ajcommercialgroup.com/broker-joey-batliner",
+    "meta_description": "Chicago and Midwest multifamily advisors. Trusted by owners. Backed by data. Specialized in multifamily dispositions across Chicago, the southwest suburbs, and beyond.",
+    "display_order": 0
+  },
+  {
+    "slug": "anthony-munoz",
+    "page_slug": "broker-anthony-munoz",
+    "name": "Anthony Munoz",
+    "title": "Founder \u00b7 Multifamily Broker",
+    "email": "amunoz@ajcommercialgroup.com",
+    "phone": "(224) 627-1295",
+    "phone_raw": "2246271295",
+    "photo_url": "assets/team/anthony-hero.jpg",
+    "card_photo_url": "assets/team/anthony-card.jpg",
+    "bio": "Anthony Munoz is the Co-Founder of AJ Commercial Group and is known for his strong sales ability, relationship-building skills, and relentless approach to multifamily brokerage. Before launching the firm, Anthony was a top-producing broker at his previous brokerage, helping drive significant multifamily sales volume across Chicagoland.\n\nPrior to real estate, he built a strong foundation in sales and client relations through his experience in medical device sales with Stryker. Anthony was also a collegiate wrestling All-American, a background that helped shape his competitive mindset, discipline, and work ethic. His ability to connect with owners, negotiate effectively, and consistently create opportunities has helped AJ Commercial Group rapidly grow into a respected name in Chicagoland multifamily real estate.",
+    "track_record": [
+      {
+        "property_slug": "property-toledo-river-birch",
+        "name": "River Birch Apartments",
+        "subtitle": "224-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Toledo-OH-224-unts-0b6dec9d-2880w.jpg"
+      },
+      {
+        "property_slug": "property-mississippi-lofts-1",
+        "name": "Mississippi Lofts",
+        "subtitle": "55-Unit Mixed-Use",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Capture-2880w.jpg"
+      },
+      {
+        "property_slug": "property-pekin-place",
+        "name": "Pekin Place Apartments",
+        "subtitle": "36-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Screenshot+2025-07-11+142454-2880w.png"
+      },
+      {
+        "property_slug": "property-879881-village-quarter-rd-3",
+        "name": "879\u2013881 Village Quarter Rd",
+        "subtitle": "26-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/West-Dundee-IL-6-unit-scaled-2880w.jpg"
+      },
+      {
+        "property_slug": "property-503507-dorchester-ct-4",
+        "name": "503\u2013507 Dorchester Ct",
+        "subtitle": "24-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/10002334_1_0-2880w.jpg"
+      },
+      {
+        "property_slug": "property-carolyn-apartments-5",
+        "name": "Carolyn Apartments",
+        "subtitle": "18-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Eureka+18+units-2880w.jpg"
+      },
+      {
+        "property_slug": "property-744-gillette-ave-6",
+        "name": "744 Gillette Ave",
+        "subtitle": "16-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/16-Unit---Aurora-2880w.png"
+      },
+      {
+        "property_slug": "property-aurora-best-place",
+        "name": "2091 & 2121 Best Place",
+        "subtitle": "16-Unit Multifamily Portfolio",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Aurora-IL-16-unit-2880w.png"
+      },
+      {
+        "property_slug": "property-2001-s-5th-ave-8",
+        "name": "2001 S 5th Ave",
+        "subtitle": "12-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Maywood+12+Units-2880w.png"
+      },
+      {
+        "property_slug": "property-chicago-ridge-central",
+        "name": "10608-10610 S Central Ave",
+        "subtitle": "12-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/ChatGPT+Image+Oct+3-+2025-+03_48_11+PM-2880w.png"
+      },
+      {
+        "property_slug": "property-420-washington-st-10",
+        "name": "420 Washington St",
+        "subtitle": "12-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/IMG_0454-2880w.jpg"
+      },
+      {
+        "property_slug": "property-round-lake-washington",
+        "name": "534 E Washington Street",
+        "subtitle": "12-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/12-Unit---Round-Lake-Park-2a52a50c-2880w.jpg"
+      },
+      {
+        "property_slug": "property-7349-175th-st-12",
+        "name": "7349 175th St",
+        "subtitle": "12-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Screenshot-2025-06-18-151712-6c36d3bd-5c99d67b-2880w.png"
+      },
+      {
+        "property_slug": "property-2415-24th-pl-13",
+        "name": "2415 24th Pl",
+        "subtitle": "12-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/North+Chicago-2880w.png"
+      },
+      {
+        "property_slug": "property-33-w-naperville-rd-14",
+        "name": "33 W Naperville Rd",
+        "subtitle": "12-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/12+Unit+-+Westmont-2880w.png"
+      },
+      {
+        "property_slug": "property-evergreen-park-93rd",
+        "name": "3158 West 93rd Street",
+        "subtitle": "11-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Evergreen-Park--11-Unit-2880w.png"
+      },
+      {
+        "property_slug": "property-7615-roosevelt-rd-16",
+        "name": "7615 Roosevelt Rd",
+        "subtitle": "10-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/IMG_9196--281-29-2880w.jpg"
+      },
+      {
+        "property_slug": "property-4848-83rd-st-17",
+        "name": "4848 83rd St",
+        "subtitle": "9-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/image000000-a8744d7e-2880w.jpeg"
+      },
+      {
+        "property_slug": "property-32-w-burlington-ave-18",
+        "name": "32 W Burlington Ave",
+        "subtitle": "8-Unit Office Building",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Westmont+-+8+units+office-2880w.jpg"
+      },
+      {
+        "property_slug": "property-1928-jackson-ave-19",
+        "name": "1928 Jackson Ave",
+        "subtitle": "8-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Evanston+8+Units-2880w.jpeg"
+      },
+      {
+        "property_slug": "property-marengo-8-unit-20",
+        "name": "Marengo 8-Unit Multifamily",
+        "subtitle": "8-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/IMG_7178-2880w.jpg"
+      },
+      {
+        "property_slug": "property-1107-koch-st-21",
+        "name": "1107 Koch St",
+        "subtitle": "8-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/pekin---8-units-2880w.png"
+      },
+      {
+        "property_slug": "property-1640-mark-ave-22",
+        "name": "1640 Mark Ave",
+        "subtitle": "8-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/IMG_5313-2880w.jpg"
+      },
+      {
+        "property_slug": "property-805807-n-wilke-rd-23",
+        "name": "805\u2013807 N Wilke Rd",
+        "subtitle": "8-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/8+unit+-+Arlington+Hieghts-2880w.jpg"
+      },
+      {
+        "property_slug": "property-16601-jean-ln-24",
+        "name": "16601 Jean Ln",
+        "subtitle": "7-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/IMG_5171-scaled-e1722450779883-2880w.jpg"
+      },
+      {
+        "property_slug": "property-1501-s-5th-ave-25",
+        "name": "1501 S 5th Ave",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Maywood-6-Units-2880w.png"
+      },
+      {
+        "property_slug": "property-5201-n-reserve-ave-26",
+        "name": "5201 N Reserve Ave",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/IMG_0213-2880w.jpg"
+      },
+      {
+        "property_slug": "property-2216-w-chicago-ave-27",
+        "name": "2216 W Chicago Ave",
+        "subtitle": "6-Unit Mixed-Use",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Screenshot+2025-10-21+091034-2880w.png"
+      },
+      {
+        "property_slug": "property-4335-lindenwood-dr-28",
+        "name": "4335 Lindenwood Dr",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/4335-Lindenwood-Dr_EDIT-45_Drone-2880w.png"
+      },
+      {
+        "property_slug": "property-13959-dori-lane-29",
+        "name": "13959 Dori Lane",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Screenshot-2025-05-29-162357-2880w.png"
+      },
+      {
+        "property_slug": "property-glen-ellyn-surrey",
+        "name": "1185 Surrey Drive",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Screenshot+2025-07-11+112741-2880w.png"
+      },
+      {
+        "property_slug": "property-chicago-potawatomie",
+        "name": "5200 N Potawatomie Ave",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/6-Unit---Ohare-2880w.jpg"
+      },
+      {
+        "property_slug": "property-320-lincoln-ct-32",
+        "name": "320 Lincoln Ct",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/320-Lincoln-2880w.jpg"
+      },
+      {
+        "property_slug": "property-justice-84th",
+        "name": "8160 W 84th Street",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/thumbnail_IMG_3198-fcde7a00-ce1c06ef-2880w.jpg"
+      },
+      {
+        "property_slug": "property-12413-maple-ave-34",
+        "name": "12413 Maple Ave",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/6+unit+-+Blue+Island.jpg"
+      },
+      {
+        "property_slug": "property-579-pershing-ave-35",
+        "name": "579 Pershing Ave",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Glen-Ellyn-IL-6-unit-scaled-2880w.jpg"
+      },
+      {
+        "property_slug": "property-4011-elm-st-36",
+        "name": "4011 Elm St",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Screenshot+2025-05-29+162307-2880w.png"
+      },
+      {
+        "property_slug": "property-4106-charleston-rd-37",
+        "name": "4106 Charleston Rd",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Screenshot+2025-10-03+111431-2880w.png"
+      },
+      {
+        "property_slug": "property-12940-hoyne-ave-38",
+        "name": "12940 Hoyne Ave",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Screenshot+2025-09-23+102822-2880w.png"
+      },
+      {
+        "property_slug": "property-918-w-eastwood-ave-39",
+        "name": "918 W Eastwood Ave",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/0e64da2c-1936-4d63-bd08-cc3ad99c1723-c6e153b1-2880w.png"
+      },
+      {
+        "property_slug": "property-7801-oak-park-ave-40",
+        "name": "7801 Oak Park Ave",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Screenshot+2025-07-07+203646-2880w.png"
+      },
+      {
+        "property_slug": "property-6409-country-ridge-dr-41",
+        "name": "6409 Country Ridge Dr",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/rsw_719h_689-2880w.webp"
+      },
+      {
+        "property_slug": "property-9120-lincoln-ct-42",
+        "name": "9120 Lincoln Ct",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/6+Unit+-+Orland+Park-2880w.jpg"
+      },
+      {
+        "property_slug": "property-6501-18th-st-44",
+        "name": "6501 18th St",
+        "subtitle": "5-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Berwyn+5+unit-2880w.png"
+      },
+      {
+        "property_slug": "property-2207-n-mango-ave-45",
+        "name": "2207 N Mango Ave",
+        "subtitle": "5-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Belmont-Cragin--Chicago---5-units-592fab98-2880w.png"
+      },
+      {
+        "property_slug": "property-oak-lawn-5-unit-46",
+        "name": "Oak Lawn 5-Unit Multifamily",
+        "subtitle": "5-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/5+Unit+-+Oak+Lawn-2880w.jpg"
+      },
+      {
+        "property_slug": "property-tinley-park-ridgeland",
+        "name": "17510 Ridgeland Avenue",
+        "subtitle": "4-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/10829575_0-3849d2d0-2880w.jpg"
+      },
+      {
+        "property_slug": "property-2650-164th-pl-48",
+        "name": "2650 164th Pl",
+        "subtitle": "4-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/4-Unit---Hammond-Indiana-2880w.jpg"
+      },
+      {
+        "property_slug": "property-highland-park-walker",
+        "name": "366 Walker Avenue",
+        "subtitle": "4-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/highland-park---4-units-2880w.png"
+      },
+      {
+        "property_slug": "property-joliet-kungs-way",
+        "name": "509 Kungs Way",
+        "subtitle": "4-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/IMG_6881-2880w.jpg"
+      },
+      {
+        "property_slug": "property-bridgeview-80th",
+        "name": "7327 W 80th Street",
+        "subtitle": "4-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/4-Unit---Bridgeview-1384c08d-2880w.png"
+      },
+      {
+        "property_slug": "property-317-s-hale-st-52",
+        "name": "317 S Hale St",
+        "subtitle": "3-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/3-Unit---Addison-2880w.jpg"
+      },
+      {
+        "property_slug": "property-roselle-terry",
+        "name": "108 Terry Drive",
+        "subtitle": "3-Unit Property",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/terry-2880w.jpg"
+      },
+      {
+        "property_slug": "property-2130-w-potomac-ave-54",
+        "name": "2130 W Potomac Ave",
+        "subtitle": "Duplex",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Wicker+Park+Duplex-2880w.png"
+      },
+      {
+        "property_slug": "property-1100-s-state-st-55",
+        "name": "1100 S State St",
+        "subtitle": "7-Unit Mixed-Use",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Screenshot+2025-07-17+091509-2880w.png"
+      },
+      {
+        "property_slug": "property-542-n-yale-ave-56",
+        "name": "542 N Yale Ave",
+        "subtitle": "2-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/542-Yale-a1b2a6d6-2880w.jpg"
+      },
+      {
+        "property_slug": "property-waterbury-apartments-1005",
+        "name": "Waterbury Apartments",
+        "subtitle": "24-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/16-Unit---Aurora-2880w.png"
+      },
+      {
+        "property_slug": "property-1281-1285-abbott-drive-1012",
+        "name": "1281-1285 Abbott Drive",
+        "subtitle": "12-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/16-Unit---Aurora-2880w.png"
+      },
+      {
+        "property_slug": "property-1016-e-division-st-1025",
+        "name": "1016 E. Division St",
+        "subtitle": "12-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/assets/properties/1016-e-division-lombard.jpg"
+      },
+      {
+        "property_slug": "property-1111-1123-broadway-ave-1026",
+        "name": "1111-1123 Broadway Ave",
+        "subtitle": "18-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/16-Unit---Aurora-2880w.png"
+      },
+      {
+        "property_slug": "property-6607-181st-street-1027",
+        "name": "6607 181st Street",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/16-Unit---Aurora-2880w.png"
+      },
+      {
+        "property_slug": "property-3642-147th-pl-1028",
+        "name": "3642 147th Pl",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/16-Unit---Aurora-2880w.png"
+      },
+      {
+        "property_slug": "property-1529-homestead-1052",
+        "name": "1529 Homestead",
+        "subtitle": "3-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/16-Unit---Aurora-2880w.png"
+      }
+    ],
+    "is_partner": true,
+    "canonical_url": "https://www.ajcommercialgroup.com/broker-anthony-munoz",
+    "meta_description": "Chicago and Midwest multifamily advisors. Trusted by owners. Backed by data. Specialized in multifamily dispositions across Chicago, the southwest suburbs, and beyond.",
+    "display_order": 1
+  },
+  {
+    "slug": "merry-galindo",
+    "page_slug": "broker-merry-galindo",
+    "name": "Merry Galindo",
+    "title": "Commercial Broker \u00b7 Deal Operations Manager",
+    "email": "merry@ajcommercialgroup.com",
+    "phone": "(630) 426-1372",
+    "phone_raw": "6304261372",
+    "photo_url": "assets/team/merry-hero.jpg",
+    "card_photo_url": "assets/team/merry-card.jpg",
+    "bio": "Merry is a multifamily broker at AJ Commercial Group who plays an active role in both business development and transaction execution across Chicagoland. In addition to working directly with buyers and sellers, she oversees the day-to-day operations behind active deals \u2014 coordinating listings, marketing campaigns, due diligence, and the transaction process from initial outreach through closing.\n\nWorking closely with the founders, Merry helps ensure deals move efficiently while maintaining strong communication with clients throughout the process.",
+    "track_record": [
+      {
+        "property_slug": "property-aurora-best-place",
+        "name": "2091 & 2121 Best Place",
+        "subtitle": "16-Unit Multifamily Portfolio",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Aurora-IL-16-unit-2880w.png"
+      },
+      {
+        "property_slug": "property-round-lake-washington",
+        "name": "534 E Washington Street",
+        "subtitle": "12-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/12-Unit---Round-Lake-Park-2a52a50c-2880w.jpg"
+      },
+      {
+        "property_slug": "property-evergreen-park-93rd",
+        "name": "3158 West 93rd Street",
+        "subtitle": "11-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Evergreen-Park--11-Unit-2880w.png"
+      },
+      {
+        "property_slug": "property-1640-mark-ave-22",
+        "name": "1640 Mark Ave",
+        "subtitle": "8-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/IMG_5313-2880w.jpg"
+      },
+      {
+        "property_slug": "property-579-pershing-ave-35",
+        "name": "579 Pershing Ave",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Glen-Ellyn-IL-6-unit-scaled-2880w.jpg"
+      },
+      {
+        "property_slug": "property-7801-oak-park-ave-40",
+        "name": "7801 Oak Park Ave",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Screenshot+2025-07-07+203646-2880w.png"
+      },
+      {
+        "property_slug": "property-2650-164th-pl-48",
+        "name": "2650 164th Pl",
+        "subtitle": "4-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/4-Unit---Hammond-Indiana-2880w.jpg"
+      },
+      {
+        "property_slug": "property-1016-e-division-st-1025",
+        "name": "1016 E. Division St",
+        "subtitle": "12-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/assets/properties/1016-e-division-lombard.jpg"
+      }
+    ],
+    "is_partner": false,
+    "canonical_url": "https://www.ajcommercialgroup.com/broker-merry-galindo",
+    "meta_description": "Chicago and Midwest multifamily advisors. Trusted by owners. Backed by data. Specialized in multifamily dispositions across Chicago, the southwest suburbs, and beyond.",
+    "display_order": 2
+  },
+  {
+    "slug": "tyler-jimenez",
+    "page_slug": "broker-tyler-jimenez",
+    "name": "Tyler Jimenez",
+    "title": "Commercial Broker",
+    "email": "tjimenez@ajcommercialgroup.com",
+    "phone": "(708) 567-4954",
+    "phone_raw": "7085674954",
+    "photo_url": "assets/team/tyler-hero.jpg",
+    "card_photo_url": "assets/team/tyler-card.jpg",
+    "bio": "Tyler focuses on multifamily dispositions across Chicago's south and southwest submarkets. He brings hands-on experience underwriting deals, walking properties, and managing the buyer outreach process \u2014 from the first call all the way to a signed PSA.",
+    "track_record": [
+      {
+        "property_slug": "property-2001-s-5th-ave-8",
+        "name": "2001 S 5th Ave",
+        "subtitle": "12-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Maywood+12+Units-2880w.png"
+      },
+      {
+        "property_slug": "property-1928-jackson-ave-19",
+        "name": "1928 Jackson Ave",
+        "subtitle": "8-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Evanston+8+Units-2880w.jpeg"
+      },
+      {
+        "property_slug": "property-1107-koch-st-21",
+        "name": "1107 Koch St",
+        "subtitle": "8-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/pekin---8-units-2880w.png"
+      },
+      {
+        "property_slug": "property-1501-s-5th-ave-25",
+        "name": "1501 S 5th Ave",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Maywood-6-Units-2880w.png"
+      },
+      {
+        "property_slug": "property-2216-w-chicago-ave-27",
+        "name": "2216 W Chicago Ave",
+        "subtitle": "6-Unit Mixed-Use",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Screenshot+2025-10-21+091034-2880w.png"
+      },
+      {
+        "property_slug": "property-4106-charleston-rd-37",
+        "name": "4106 Charleston Rd",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Screenshot+2025-10-03+111431-2880w.png"
+      },
+      {
+        "property_slug": "property-918-w-eastwood-ave-39",
+        "name": "918 W Eastwood Ave",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/0e64da2c-1936-4d63-bd08-cc3ad99c1723-c6e153b1-2880w.png"
+      },
+      {
+        "property_slug": "property-9120-lincoln-ct-42",
+        "name": "9120 Lincoln Ct",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/6+Unit+-+Orland+Park-2880w.jpg"
+      },
+      {
+        "property_slug": "property-2207-n-mango-ave-45",
+        "name": "2207 N Mango Ave",
+        "subtitle": "5-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Belmont-Cragin--Chicago---5-units-592fab98-2880w.png"
+      },
+      {
+        "property_slug": "property-1281-1285-abbott-drive-1012",
+        "name": "1281-1285 Abbott Drive",
+        "subtitle": "12-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/16-Unit---Aurora-2880w.png"
+      },
+      {
+        "property_slug": "property-6607-181st-street-1027",
+        "name": "6607 181st Street",
+        "subtitle": "6-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/16-Unit---Aurora-2880w.png"
+      }
+    ],
+    "is_partner": false,
+    "canonical_url": "https://www.ajcommercialgroup.com/broker-tyler-jimenez",
+    "meta_description": "Chicago and Midwest multifamily advisors. Trusted by owners. Backed by data. Specialized in multifamily dispositions across Chicago, the southwest suburbs, and beyond.",
+    "display_order": 3
+  },
+  {
+    "slug": "brianna-gulia",
+    "page_slug": "broker-brianna-gulia",
+    "name": "Brianna Gulia",
+    "title": "Commercial Broker",
+    "email": "brianna@ajcommercialgroup.com",
+    "phone": "(773) 812-1988",
+    "phone_raw": "7738121988",
+    "photo_url": "assets/team/brianna-hero.jpg",
+    "card_photo_url": "assets/team/brianna-card.jpg",
+    "bio": "Brianna works directly with multifamily owners across Chicagoland to bring properties to market. She builds long-term relationships with both sellers and active investors \u2014 and pairs the two together when the timing and economics line up.",
+    "track_record": [
+      {
+        "property_slug": "property-1111-1123-broadway-ave-1026",
+        "name": "1111-1123 Broadway Ave",
+        "subtitle": "18-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/16-Unit---Aurora-2880w.png"
+      }
+    ],
+    "is_partner": false,
+    "canonical_url": "https://www.ajcommercialgroup.com/broker-brianna-gulia",
+    "meta_description": "Chicago and Midwest multifamily advisors. Trusted by owners. Backed by data. Specialized in multifamily dispositions across Chicago, the southwest suburbs, and beyond.",
+    "display_order": 4
+  },
+  {
+    "slug": "ketyra-saunders",
+    "page_slug": "broker-ketyra-saunders",
+    "name": "Ketyra Saunders",
+    "title": "Commercial Broker",
+    "email": "somebodyrealtor@gmail.com",
+    "phone": "(630) 795-9584",
+    "phone_raw": "6307959584",
+    "photo_url": "assets/team/ketyra-hero.jpg",
+    "card_photo_url": "assets/team/ketyra-card.jpg",
+    "bio": "Ketyra represents owners across Chicago's North Shore and northwest suburbs, with a focus on small-to-mid-sized multifamily assets. Her clients value her honest, patient approach \u2014 and the fact that she only brings deals to market when the numbers actually work for the seller.",
+    "track_record": [
+      {
+        "property_slug": "property-420-washington-st-10",
+        "name": "420 Washington St",
+        "subtitle": "12-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/IMG_0454-2880w.jpg"
+      },
+      {
+        "property_slug": "property-4848-83rd-st-17",
+        "name": "4848 83rd St",
+        "subtitle": "9-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/image000000-a8744d7e-2880w.jpeg"
+      },
+      {
+        "property_slug": "property-805807-n-wilke-rd-23",
+        "name": "805\u2013807 N Wilke Rd",
+        "subtitle": "8-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/8+unit+-+Arlington+Hieghts-2880w.jpg"
+      },
+      {
+        "property_slug": "property-highland-park-walker",
+        "name": "366 Walker Avenue",
+        "subtitle": "4-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/highland-park---4-units-2880w.png"
+      }
+    ],
+    "is_partner": false,
+    "canonical_url": "https://www.ajcommercialgroup.com/broker-ketyra-saunders",
+    "meta_description": "Chicago and Midwest multifamily advisors. Trusted by owners. Backed by data. Specialized in multifamily dispositions across Chicago, the southwest suburbs, and beyond.",
+    "display_order": 5
+  },
+  {
+    "slug": "brandon-bucio",
+    "page_slug": "broker-brandon-bucio",
+    "name": "Brandon Bucio",
+    "title": "Commercial Broker",
+    "email": "bbucio@ajcommercialgroup.com",
+    "phone": "(708) 703-2367",
+    "phone_raw": "7087032367",
+    "photo_url": "",
+    "card_photo_url": "",
+    "bio": "Brandon focuses on small multifamily dispositions across Cook County and the inner-ring suburbs. He's available to walk any owner through the current market and what their building would likely trade for.",
+    "track_record": [],
+    "is_partner": false,
+    "canonical_url": "https://www.ajcommercialgroup.com/broker-brandon-bucio",
+    "meta_description": "Chicago and Midwest multifamily advisors. Trusted by owners. Backed by data. Specialized in multifamily dispositions across Chicago, the southwest suburbs, and beyond.",
+    "display_order": 6
+  },
+  {
+    "slug": "alex-munoz",
+    "page_slug": "broker-alex-munoz",
+    "name": "Alex Munoz",
+    "title": "Data Analyst",
+    "email": "contact@ajcommercialgroup.com",
+    "phone": "",
+    "phone_raw": "",
+    "photo_url": "",
+    "card_photo_url": "",
+    "bio": "Alex supports the team behind the scenes \u2014 running comps, rent studies, and the analytical work that drives every property valuation and broker opinion of value AJ Commercial Group puts in front of an owner.",
+    "track_record": [],
+    "is_partner": false,
+    "canonical_url": "https://www.ajcommercialgroup.com/broker-alex-munoz",
+    "meta_description": "Chicago and Midwest multifamily advisors. Trusted by owners. Backed by data. Specialized in multifamily dispositions across Chicago, the southwest suburbs, and beyond.",
+    "display_order": 7
+  },
+  {
+    "slug": "katie-nunez",
+    "page_slug": "broker-katie-nunez",
+    "name": "Katie Nunez",
+    "title": "Commercial Broker",
+    "email": "contact@ajcommercialgroup.com",
+    "phone": "(224) 627-1295",
+    "phone_raw": "2246271295",
+    "photo_url": "",
+    "card_photo_url": "",
+    "bio": "Katie has experience representing multifamily owners on out-of-state transactions, including AJ Commercial Group's institutional deal in Toledo, Ohio. She partners with the founders on larger, multi-state assignments.",
+    "track_record": [
+      {
+        "property_slug": "property-toledo-river-birch",
+        "name": "River Birch Apartments",
+        "subtitle": "224-Unit Multifamily",
+        "image": "https://lirp.cdn-website.com/05fd87ad/dms3rep/multi/opt/Toledo-OH-224-unts-0b6dec9d-2880w.jpg"
+      }
+    ],
+    "is_partner": false,
+    "canonical_url": "https://www.ajcommercialgroup.com/broker-katie-nunez",
+    "meta_description": "Chicago and Midwest multifamily advisors. Trusted by owners. Backed by data. Specialized in multifamily dispositions across Chicago, the southwest suburbs, and beyond.",
+    "display_order": 99
+  }
+]

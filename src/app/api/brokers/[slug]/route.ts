@@ -1,0 +1,26 @@
+import { NextRequest, NextResponse } from "next/server";
+import { getBroker, saveBroker, deleteBroker } from "@/lib/data";
+
+type Ctx = { params: Promise<{ slug: string }> };
+
+export async function GET(_req: NextRequest, ctx: Ctx) {
+  const { slug } = await ctx.params;
+  const broker = await getBroker(slug);
+  if (!broker) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  return NextResponse.json(broker);
+}
+
+export async function PUT(req: NextRequest, ctx: Ctx) {
+  const { slug } = await ctx.params;
+  const body = await req.json();
+  const updated = await saveBroker(slug, body);
+  if (!updated) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  return NextResponse.json(updated);
+}
+
+export async function DELETE(_req: NextRequest, ctx: Ctx) {
+  const { slug } = await ctx.params;
+  const ok = await deleteBroker(slug);
+  if (!ok) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  return NextResponse.json({ ok: true });
+}
