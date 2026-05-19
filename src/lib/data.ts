@@ -98,6 +98,7 @@ export async function saveBroker(slug: string, data: Partial<Broker>): Promise<B
 export async function createBroker(data: Partial<Broker> & { slug: string }): Promise<Broker> {
   if (isSupabaseConfigured) {
     const insert = {
+      ...data,
       slug: data.slug,
       name: data.name ?? "Untitled Broker",
       title: data.title ?? "Commercial Broker",
@@ -108,7 +109,6 @@ export async function createBroker(data: Partial<Broker> & { slug: string }): Pr
       is_partner: data.is_partner ?? false,
       display_order: data.display_order ?? 99,
       track_record: data.track_record ?? [],
-      ...data,
     };
     const { data: row, error } = await supabaseAdmin()
       .from("brokers")
@@ -205,11 +205,11 @@ export async function saveProperty(slug: string, data: Partial<Property>): Promi
 export async function createProperty(data: Partial<Property> & { slug: string }): Promise<Property> {
   if (isSupabaseConfigured) {
     const insert = {
+      ...data,
       slug: data.slug,
       name: data.name ?? "Untitled Listing",
       type: data.type ?? "Multifamily",
       status: data.status ?? "draft",
-      ...data,
     };
     const { data: row, error } = await supabaseAdmin().from("properties").insert(insert).select("*").single();
     if (error) throw error;
@@ -301,11 +301,11 @@ export async function savePost(slug: string, data: Partial<Post>): Promise<Post 
 export async function createPost(data: Partial<Post> & { slug: string }): Promise<Post> {
   if (isSupabaseConfigured) {
     const insert = {
+      ...data,
       slug: data.slug,
       title: data.title ?? "Untitled Post",
       category: data.category ?? "Market Updates",
       status: data.status ?? "draft",
-      ...data,
     };
     const { data: row, error } = await supabaseAdmin().from("posts").insert(insert).select("*").single();
     if (error) throw error;
