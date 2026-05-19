@@ -1,4 +1,4 @@
-# AJ Commercial Group — Admin
+# AJ Commercial Group — Admin 
 
 The admin app for [ajcommercialgroup.com](https://www.ajcommercialgroup.com). Built with Next.js 15 (App Router), TypeScript, and Tailwind. Designed to deploy at `app.ajcommercialgroup.com`.
 
