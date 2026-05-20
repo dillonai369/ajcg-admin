@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { UserButton, useUser } from "@clerk/nextjs";
 import {
   LayoutDashboard,
   Building2,
@@ -9,7 +10,6 @@ import {
   UsersRound,
   Search,
   Settings,
-  ChevronsUpDown,
 } from "lucide-react";
 
 const NAV = [
@@ -22,6 +22,10 @@ const NAV = [
 
 export default function Sidebar() {
   const pathname = usePathname() || "/";
+  const { user } = useUser();
+  const displayName =
+    user?.fullName || user?.primaryEmailAddress?.emailAddress?.split("@")[0] || "Admin";
+  const subline = user?.primaryEmailAddress?.emailAddress || "Admin";
 
   return (
     <aside className="sidebar w-60 flex-shrink-0 flex flex-col">
@@ -62,14 +66,18 @@ export default function Sidebar() {
 
       <div className="px-3 py-4 border-t border-white/10">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white text-xs font-semibold">
-            JB
-          </div>
+          <UserButton
+            appearance={{
+              elements: {
+                avatarBox: "w-8 h-8",
+              },
+            }}
+            afterSignOutUrl="/sign-in"
+          />
           <div className="flex-1 min-w-0">
-            <div className="text-white text-xs font-medium truncate">Joey Batliner</div>
-            <div className="text-slate-300 text-xs truncate">Admin</div>
+            <div className="text-white text-xs font-medium truncate">{displayName}</div>
+            <div className="text-slate-300 text-xs truncate">{subline}</div>
           </div>
-          <ChevronsUpDown className="w-3.5 h-3.5 text-slate-400" />
         </div>
       </div>
     </aside>
