@@ -10,6 +10,7 @@ import {
   UsersRound,
   Search,
   Settings,
+  ShieldCheck,
 } from "lucide-react";
 
 const NAV = [
@@ -20,7 +21,7 @@ const NAV = [
   { href: "/admin/seo", label: "SEO", icon: Search, match: (p: string) => p.startsWith("/admin/seo") },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ isSuperAdmin = false }: { isSuperAdmin?: boolean }) {
   const pathname = usePathname() || "/";
   const { user } = useUser();
   const displayName =
@@ -62,6 +63,15 @@ export default function Sidebar() {
           <Settings className="w-4 h-4" />
           Settings
         </Link>
+        {isSuperAdmin ? (
+          <Link
+            href="/admin/users"
+            className={`nav-item ${pathname.startsWith("/admin/users") ? "active" : ""} flex items-center gap-2.5 px-3 py-2 rounded text-sm`}
+          >
+            <ShieldCheck className="w-4 h-4" />
+            Users
+          </Link>
+        ) : null}
       </nav>
 
       <div className="px-3 py-4 border-t border-white/10">
