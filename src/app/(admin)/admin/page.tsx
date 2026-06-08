@@ -1,10 +1,24 @@
-import { Eye, Mail, Building2, Search, FileText, UsersRound } from "lucide-react";
-import { getBrokers, getProperties, getPosts } from "@/lib/data";
+import { Mail, Building2, FileText, UsersRound } from "lucide-react";
+import { getBrokers, getProperties, getPosts, getInquiries } from "@/lib/data";
 import StatCard from "@/components/StatCard";
 import TrafficChart from "@/components/TrafficChart";
 
+export const dynamic = "force-dynamic";
+
 export default async function OverviewPage() {
-  const [brokers, properties, posts] = await Promise.all([getBrokers(), getProperties(), getPosts()]);
+  const [brokers, properties, posts, inquiries] = await Promise.all([
+    getBrokers(),
+    getProperties(),
+    getPosts(),
+    getInquiries().catch(() => []),
+  ]);
+
+  // Real, derived stats
+  const activeStatuses = new Set(["for sale", "under contract", "coming soon"]);
+  const activeListings = properties.filter((p) => activeStatuses.has((p.status || "").toLowerCase())).length;
+  const soldListings = properties.filter((p) => (p.status || "").toLowerCase() === "sold").length;
+  const publishedPosts = posts.filter((p) => (p.status || "").toLowerCase() === "published").length;
+  const newInquiries = inquiries.filter((i) => (i.status || "new") === "new").length;
 
   return (
     <>
@@ -22,10 +36,30 @@ export default async function OverviewPage() {
 
       <div className="p-8">
         <div className="grid grid-cols-4 gap-4 mb-6">
-          <StatCard label="Site Visitors" value="8,412" delta="+11% vs last month" deltaDirection="up" icon={Eye} />
-          <StatCard label="Form Submissions" value="47" delta="+23% vs last month" deltaDirection="up" icon={Mail} />
-          <StatCard label="Active Listings" value={properties.length} icon={Building2} hint={`${posts.length} blog posts · ${brokers.length} brokers`} />
-          <StatCard label="Avg. Keyword Rank" value="7.4" delta="Up 2.1 positions" deltaDirection="up" icon={Search} />
+          <StatCard
+            label="Active Listings"
+            value={activeListings}
+            icon={Building2}
+            hint={`${soldListings} sold · ${properties.length} total`}
+          />
+          <StatCard
+            label="Form Submissions"
+            value={inquiries.length}
+            icon={Mail}
+            hint={`${newInquiries} new`}
+          />
+          <StatCard
+            label="Brokers"
+            value={brokers.length}
+            icon={UsersRound}
+            hint={`${brokers.filter((b) => b.is_partner).length} partners`}
+          />
+          <StatCard
+            label="Blog Posts"
+            value={publishedPosts}
+            icon={FileText}
+            hint={`${posts.length - publishedPosts} draft${posts.length - publishedPosts === 1 ? "" : "s"}`}
+          />
         </div>
 
         <div className="grid grid-cols-3 gap-4 mb-6">
@@ -107,21 +141,34 @@ export default async function OverviewPage() {
               <span className="text-xs text-slate-500">From contact form</span>
             </div>
             <div className="divide-y divide-slate-100">
-              {[
-                { name: "Marcus Reynolds", email: "marcus.r@reynoldscap.com · (312) 555-0142", note: "Looking to acquire 20+ unit buildings in Logan Square", pill: "pill-amber", label: "New" },
-                { name: "Priya Shah", email: "priya@shahre.com · (773) 555-0188", note: "Listing inquiry: 4421 N Kedzie — wanting to tour", pill: "pill-amber", label: "New" },
-                { name: "David Chen", email: "d.chen@brightoncap.com · (708) 555-0119", note: "Wants to sell 32-unit in Edgewater", pill: "pill-green", label: "Contacted" },
-                { name: "Elena Vasquez", email: "elena@vrealty.io · (312) 555-0233", note: "Broker collaboration — North Side properties", pill: "pill-blue", label: "In progress" },
-              ].map((q) => (
-                <div key={q.name} className="px-5 py-3 text-sm">
-                  <div className="flex items-center justify-between mb-1">
-                    <div className="font-medium">{q.name}</div>
-                    <span className={`pill ${q.pill}`}>{q.label}</span>
-                  </div>
-                  <div className="text-xs text-slate-500 mb-1">{q.email}</div>
-                  <div className="text-xs text-slate-600">{q.note}</div>
+              {inquiries.length === 0 ? (
+                <div className="px-5 py-6 text-sm text-slate-500 text-center">
+                  No inquiries yet. They&apos;ll appear here as soon as someone submits the contact form.
                 </div>
-              ))}
+              ) : (
+                inquiries.slice(0, 6).map((q) => {
+                  const pillVariant =
+                    q.status === "contacted" ? "pill-green" :
+                    q.status === "in progress" ? "pill-blue" :
+                    q.status === "closed" ? "pill-gray" : "pill-amber";
+                  const pillLabel =
+                    q.status === "contacted" ? "Contacted" :
+                    q.status === "in progress" ? "In progress" :
+                    q.status === "closed" ? "Closed" : "New";
+                  return (
+                    <div key={q.id || q.email} className="px-5 py-3 text-sm">
+                      <div className="flex items-center justify-between mb-1">
+                        <div className="font-medium">{q.name}</div>
+                        <span className={`pill ${pillVariant}`}>{pillLabel}</span>
+                      </div>
+                      <div className="text-xs text-slate-500 mb-1">
+                        {q.email}{q.email && q.phone ? " · " : ""}{q.phone}
+                      </div>
+                      {q.message ? <div className="text-xs text-slate-600">{q.message.slice(0, 120)}</div> : null}
+                    </div>
+                  );
+                })
+              )}
             </div>
           </div>
         </div>

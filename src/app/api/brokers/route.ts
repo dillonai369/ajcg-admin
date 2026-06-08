@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { getBrokers, createBroker } from "@/lib/data";
 import { slugify } from "@/lib/utils";
 
@@ -12,6 +13,9 @@ export async function POST(req: NextRequest) {
   const slug = body.slug || slugify(body.name || "new-broker");
   try {
     const created = await createBroker({ ...body, slug });
+    revalidatePath("/our-team");
+    revalidatePath("/");
+    revalidatePath(`/broker/${slug}`);
     return NextResponse.json(created, { status: 201 });
   } catch (err: unknown) {
     return NextResponse.json({ error: (err as Error).message }, { status: 400 });

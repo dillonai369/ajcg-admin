@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { getProperties, createProperty } from "@/lib/data";
 import { slugify } from "@/lib/utils";
 
@@ -12,6 +13,10 @@ export async function POST(req: NextRequest) {
   const slug = body.slug || slugify(body.name || "new-listing");
   try {
     const created = await createProperty({ ...body, slug });
+    // Force-invalidate the public pages that show this listing
+    revalidatePath("/recently-sold");
+    revalidatePath("/");
+    revalidatePath(`/property/${slug}`);
     return NextResponse.json(created, { status: 201 });
   } catch (err: unknown) {
     return NextResponse.json({ error: (err as Error).message }, { status: 400 });
