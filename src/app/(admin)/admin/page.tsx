@@ -37,10 +37,10 @@ export default async function OverviewPage() {
       <div className="p-8">
         <div className="grid grid-cols-4 gap-4 mb-6">
           <StatCard
-            label="Active Listings"
-            value={activeListings}
+            label="Listings"
+            value={properties.length}
             icon={Building2}
-            hint={`${soldListings} sold · ${properties.length} total`}
+            hint={`${soldListings} sold · ${activeListings} for sale`}
           />
           <StatCard
             label="Form Submissions"
