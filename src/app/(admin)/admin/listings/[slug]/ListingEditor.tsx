@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Image as ImageIcon, Info, Ruler, DollarSign, Sparkles, AlignLeft, Plus } from "lucide-react";
-import type { Property } from "@/lib/types";
+import { ArrowLeft, Image as ImageIcon, Info, Ruler, DollarSign, Sparkles, AlignLeft, Plus, X } from "lucide-react";
+import type { Property, Broker } from "@/lib/types";
 import PhotoUpload from "@/components/PhotoUpload";
 import { Field, FieldInput, FieldSelect, FieldTextarea, FieldLabel } from "@/components/ui/FieldInput";
 import { AIInlineAssist } from "@/components/AIAssistPanel";
@@ -21,21 +21,32 @@ export default function ListingEditor({ initial }: { initial: Property }) {
   const [savedAt, setSavedAt] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [newHighlight, setNewHighlight] = useState("");
+  const [allBrokers, setAllBrokers] = useState<Broker[]>([]);
+
+  // Load brokers once for the "Listed by" picker
+  useEffect(() => {
+    fetch("/api/brokers")
+      .then((r) => (r.ok ? r.json() : []))
+      .then((data: Broker[]) => setAllBrokers(data))
+      .catch(() => {});
+  }, []);
 
   function patch(p: Partial<Property>) {
     setForm((f) => ({ ...f, ...p }));
   }
 
-  async function save() {
+  async function saveWithStatus(statusOverride?: string) {
     setSaving(true);
     setError(null);
     try {
+      const payload = statusOverride ? { ...form, status: statusOverride } : form;
       const res = await fetch(`/api/properties/${form.slug}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       });
       if (!res.ok) throw new Error((await res.json()).error || "Save failed");
+      if (statusOverride) patch({ status: statusOverride });
       setSavedAt(new Date().toLocaleTimeString());
     } catch (e) {
       setError((e as Error).message);
@@ -43,6 +54,20 @@ export default function ListingEditor({ initial }: { initial: Property }) {
       setSaving(false);
     }
   }
+  const save = () => saveWithStatus();
+  const saveDraft = () => saveWithStatus("draft");
+
+  function addBrokerSlug(slug: string) {
+    if (!slug) return;
+    const existing = (form as Property & { broker_slugs?: string[] }).broker_slugs ?? [];
+    if (existing.includes(slug)) return;
+    patch({ ...(form as Property), broker_slugs: [...existing, slug] } as Partial<Property>);
+  }
+  function removeBrokerSlug(slug: string) {
+    const existing = (form as Property & { broker_slugs?: string[] }).broker_slugs ?? [];
+    patch({ ...(form as Property), broker_slugs: existing.filter((s) => s !== slug) } as Partial<Property>);
+  }
+  const assignedSlugs: string[] = (form as Property & { broker_slugs?: string[] }).broker_slugs ?? [];
 
   function addHighlight() {
     const trimmed = newHighlight.trim();
@@ -70,8 +95,22 @@ export default function ListingEditor({ initial }: { initial: Property }) {
         <div className="flex items-center gap-2">
           {savedAt ? <span className="text-xs text-emerald-600">Saved at {savedAt}</span> : null}
           {error ? <span className="text-xs text-red-600">{error}</span> : null}
-          <button type="button" className="btn-ghost text-sm px-3 py-2 rounded-lg">Save draft</button>
-          <button type="button" className="text-sm px-3 py-2 rounded-lg border border-slate-200">Preview</button>
+          <button
+            type="button"
+            onClick={saveDraft}
+            disabled={saving}
+            className="btn-ghost text-sm px-3 py-2 rounded-lg disabled:opacity-50"
+          >
+            Save draft
+          </button>
+          <a
+            href={`/property/${form.slug}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm px-3 py-2 rounded-lg border border-slate-200 hover:bg-slate-50"
+          >
+            Preview
+          </a>
           <button
             type="button"
             onClick={save}
@@ -210,7 +249,10 @@ export default function ListingEditor({ initial }: { initial: Property }) {
               onChange={(e) => patch({ description: e.target.value })}
               className="mb-4"
             />
-            <AIInlineAssist />
+            <AIInlineAssist
+              getInput={() => form.description ?? ""}
+              onResult={(out) => patch({ description: out })}
+            />
           </div>
         </div>
 
@@ -218,9 +260,42 @@ export default function ListingEditor({ initial }: { initial: Property }) {
           <div className="card p-5">
             <h4 className="font-semibold text-sm mb-3">Listed by</h4>
             <p className="text-xs text-slate-500 mb-3">Assign one or more brokers</p>
-            <button type="button" className="text-xs btn-ghost border border-slate-200 px-3 py-1.5 rounded-lg w-full flex items-center justify-center gap-1">
-              <Plus className="w-3 h-3" /> Add broker
-            </button>
+            {assignedSlugs.length > 0 ? (
+              <div className="space-y-2 mb-3">
+                {assignedSlugs.map((slug) => {
+                  const b = allBrokers.find((x) => x.slug === slug);
+                  return (
+                    <div key={slug} className="flex items-center gap-2 p-2 border border-slate-200 rounded-lg">
+                      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white text-xs font-semibold">
+                        {(b?.name ?? slug).split(" ").map((s) => s[0]).slice(0, 2).join("").toUpperCase()}
+                      </div>
+                      <div className="flex-1 text-sm">{b?.name ?? slug}</div>
+                      <button
+                        type="button"
+                        onClick={() => removeBrokerSlug(slug)}
+                        className="btn-ghost p-1 rounded"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : null}
+            <FieldSelect
+              value=""
+              onChange={(e) => {
+                addBrokerSlug(e.target.value);
+                e.target.value = "";
+              }}
+            >
+              <option value="">+ Add broker…</option>
+              {allBrokers
+                .filter((b) => !assignedSlugs.includes(b.slug))
+                .map((b) => (
+                  <option key={b.slug} value={b.slug}>{b.name}</option>
+                ))}
+            </FieldSelect>
           </div>
 
           <div className="card p-5">
@@ -251,9 +326,14 @@ export default function ListingEditor({ initial }: { initial: Property }) {
 
           <div className="card p-5">
             <h4 className="font-semibold text-sm mb-3">Documents</h4>
-            <p className="text-xs text-slate-500 mb-3">OM, rent roll, T-12 (optional)</p>
-            <button type="button" className="text-xs btn-ghost border border-slate-200 px-3 py-2 rounded-lg w-full flex items-center justify-center gap-1">
-              Upload document
+            <p className="text-xs text-slate-500 mb-3">OM, rent roll, T-12 — coming soon</p>
+            <button
+              type="button"
+              disabled
+              className="text-xs border border-slate-200 px-3 py-2 rounded-lg w-full flex items-center justify-center gap-1 opacity-40 cursor-not-allowed text-slate-500"
+              title="Document upload coming in a follow-up release"
+            >
+              Upload document (coming soon)
             </button>
           </div>
         </div>

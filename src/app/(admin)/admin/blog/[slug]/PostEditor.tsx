@@ -88,7 +88,14 @@ export default function PostEditor({ initial }: { initial: Post }) {
             </span>
           ) : null}
           {error ? <span className="text-xs text-red-600">{error}</span> : null}
-          <button type="button" className="btn-ghost text-sm px-3 py-2 rounded-lg">Preview</button>
+          <a
+            href={`/blog/${form.slug}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-ghost text-sm px-3 py-2 rounded-lg"
+          >
+            Preview
+          </a>
           <button
             type="button"
             onClick={save}
@@ -148,7 +155,22 @@ export default function PostEditor({ initial }: { initial: Post }) {
             <BlockEditor blocks={form.blocks ?? []} onChange={(blocks) => patch({ blocks })} />
           </div>
 
-          <AIBlogPanel />
+          <AIBlogPanel
+            getBody={() => (form.blocks ?? []).map((b) => b.text || "").join("\n\n").trim()}
+            getTitle={() => form.title}
+            getExcerpt={() => form.excerpt ?? ""}
+            onBodyResult={(text) => {
+              // Append polished/expanded text as a new paragraph block
+              const newBlock = { id: `ai-${Date.now()}`, type: "paragraph" as const, text };
+              patch({ blocks: [...(form.blocks ?? []), newBlock] });
+            }}
+            onMetaResult={(meta) => {
+              patch({
+                meta_title: meta.title ?? form.meta_title,
+                meta_description: meta.description ?? form.meta_description,
+              });
+            }}
+          />
         </div>
 
         <div className="space-y-4">

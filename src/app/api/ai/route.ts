@@ -10,7 +10,10 @@
 import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 
-const MODEL = "claude-opus-4-6";
+// Claude Haiku 4.5 — fastest & cheapest. Plenty good for listing descriptions
+// and blog drafting (~$0.01-0.02 per generation). Bump up to claude-sonnet-4-6
+// if quality needs a step up.
+const MODEL = "claude-haiku-4-5";
 
 const SYSTEM_PROMPTS: Record<string, string> = {
   polish:

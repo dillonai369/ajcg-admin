@@ -50,12 +50,25 @@ export default function BrokerEditor({ initial }: { initial: Broker }) {
     }
   }
 
-  function onPhoto(e: ChangeEvent<HTMLInputElement>) {
+  const [uploading, setUploading] = useState(false);
+  async function onPhoto(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => patch({ photo_url: String(reader.result) });
-    reader.readAsDataURL(file);
+    setUploading(true);
+    setError(null);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("bucket", "broker-photos");
+      const r = await fetch("/api/upload", { method: "POST", body: fd });
+      if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error || "Upload failed");
+      const { url } = (await r.json()) as { url: string };
+      patch({ photo_url: url, card_photo_url: url });
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setUploading(false);
+    }
   }
 
   function addSpec() {
@@ -91,7 +104,14 @@ export default function BrokerEditor({ initial }: { initial: Broker }) {
         <div className="flex items-center gap-2">
           {savedAt ? <span className="text-xs text-emerald-600">Saved at {savedAt}</span> : null}
           {error ? <span className="text-xs text-red-600">{error}</span> : null}
-          <button type="button" className="btn-ghost text-sm px-3 py-2 rounded-lg">Preview</button>
+          <a
+            href={`/broker/${form.slug}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-ghost text-sm px-3 py-2 rounded-lg"
+          >
+            Preview
+          </a>
           <button
             type="button"
             onClick={save}
@@ -121,9 +141,10 @@ export default function BrokerEditor({ initial }: { initial: Broker }) {
                 <button
                   type="button"
                   onClick={() => fileRef.current?.click()}
-                  className="text-xs btn-ghost border border-slate-200 px-2 py-1 rounded mt-2 w-full"
+                  disabled={uploading}
+                  className="text-xs btn-ghost border border-slate-200 px-2 py-1 rounded mt-2 w-full disabled:opacity-50"
                 >
-                  Change photo
+                  {uploading ? "Uploading…" : "Change photo"}
                 </button>
               </div>
               <div className="flex-1">
