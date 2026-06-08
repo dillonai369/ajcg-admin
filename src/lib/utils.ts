@@ -2,6 +2,26 @@ export function cn(...classes: Array<string | false | null | undefined>): string
   return classes.filter(Boolean).join(" ");
 }
 
+/**
+ * Build a URL that hits the PUBLIC website regardless of which subdomain
+ * the admin is currently on. The admin lives on app.ajcommercialgroup.com;
+ * the middleware redirects anything other than /admin/... there back to
+ * /admin. So Preview buttons in the admin need to open the apex domain
+ * (ajcommercialgroup.com) where the public pages actually render.
+ *
+ * Client-only: returns a fully-qualified URL when host starts with "app.",
+ * otherwise returns the relative path.
+ */
+export function publicSiteUrl(path: string): string {
+  if (typeof window === "undefined") return path;
+  const host = window.location.hostname;
+  if (host.startsWith("app.")) {
+    const apex = host.replace(/^app\./, "");
+    return `${window.location.protocol}//${apex}${path}`;
+  }
+  return path;
+}
+
 export function slugify(input: string): string {
   return input
     .toLowerCase()

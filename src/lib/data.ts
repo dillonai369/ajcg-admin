@@ -160,10 +160,14 @@ export async function deleteBroker(slug: string): Promise<boolean> {
 // =================================================================
 export async function getProperties(): Promise<Property[]> {
   if (isSupabaseConfigured) {
+    // Order by created_at desc so newly-added listings always appear first.
+    // Falls back to sale_date for ties, then name. This means a listing
+    // Mary or Joey adds in the admin shows up at the top of /recently-sold
+    // immediately (after the 60s ISR cache flush).
     const { data, error } = await supabaseAdmin()
       .from("properties")
       .select("*")
-      .order("sale_date", { ascending: false, nullsFirst: false });
+      .order("created_at", { ascending: false, nullsFirst: false });
     if (error) throw error;
     return (data ?? []) as Property[];
   }

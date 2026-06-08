@@ -103,14 +103,17 @@ export default function ListingEditor({ initial }: { initial: Property }) {
           >
             Save draft
           </button>
-          <a
-            href={`/property/${form.slug}`}
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            type="button"
+            onClick={() => {
+              import("@/lib/utils").then(({ publicSiteUrl }) => {
+                window.open(publicSiteUrl(`/property/${form.slug}`), "_blank", "noopener,noreferrer");
+              });
+            }}
             className="text-sm px-3 py-2 rounded-lg border border-slate-200 hover:bg-slate-50"
           >
             Preview
-          </a>
+          </button>
           <button
             type="button"
             onClick={save}

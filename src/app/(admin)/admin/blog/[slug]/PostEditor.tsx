@@ -88,14 +88,17 @@ export default function PostEditor({ initial }: { initial: Post }) {
             </span>
           ) : null}
           {error ? <span className="text-xs text-red-600">{error}</span> : null}
-          <a
-            href={`/blog/${form.slug}`}
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            type="button"
+            onClick={() => {
+              import("@/lib/utils").then(({ publicSiteUrl }) => {
+                window.open(publicSiteUrl(`/blog/${form.slug}`), "_blank", "noopener,noreferrer");
+              });
+            }}
             className="btn-ghost text-sm px-3 py-2 rounded-lg"
           >
             Preview
-          </a>
+          </button>
           <button
             type="button"
             onClick={save}

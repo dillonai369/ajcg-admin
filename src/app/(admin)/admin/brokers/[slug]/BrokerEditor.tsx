@@ -104,14 +104,17 @@ export default function BrokerEditor({ initial }: { initial: Broker }) {
         <div className="flex items-center gap-2">
           {savedAt ? <span className="text-xs text-emerald-600">Saved at {savedAt}</span> : null}
           {error ? <span className="text-xs text-red-600">{error}</span> : null}
-          <a
-            href={`/broker/${form.slug}`}
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            type="button"
+            onClick={() => {
+              import("@/lib/utils").then(({ publicSiteUrl }) => {
+                window.open(publicSiteUrl(`/broker/${form.slug}`), "_blank", "noopener,noreferrer");
+              });
+            }}
             className="btn-ghost text-sm px-3 py-2 rounded-lg"
           >
             Preview
-          </a>
+          </button>
           <button
             type="button"
             onClick={save}
