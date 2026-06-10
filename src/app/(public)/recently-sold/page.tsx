@@ -3,7 +3,9 @@ import { getProperties } from "@/lib/data";
 import type { Metadata } from "next";
 import type { Property } from "@/lib/types";
 
-export const revalidate = 60;
+// Always pull fresh from Supabase so admin-added listings show up immediately.
+// (Static cache from build time was excluding new rows even after revalidation.)
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Recently Sold — AJ Commercial Group",
@@ -33,7 +35,15 @@ function cityLabel(p: Property): string {
 
 export default async function RecentlySoldPage() {
   const properties = await getProperties();
-  const sold = properties.filter((p) => (p.status || "").toLowerCase() === "sold");
+  const sold = properties
+    .filter((p) => (p.status || "").toLowerCase() === "sold")
+    // Sort by unit count descending — biggest deals first (Toledo 224 down to smallest).
+    // Strip non-digits before parsing so values like "10-Unit" or "224" both work.
+    .sort((a, b) => {
+      const au = parseInt(String(a.units || "0").replace(/\D/g, ""), 10) || 0;
+      const bu = parseInt(String(b.units || "0").replace(/\D/g, ""), 10) || 0;
+      return bu - au;
+    });
 
   return (
     <>

@@ -4,16 +4,7 @@ import { getProperty, getProperties, getBrokers } from "@/lib/data";
 import type { Metadata } from "next";
 import type { Broker } from "@/lib/types";
 
-export const revalidate = 60;
-
-export async function generateStaticParams() {
-  try {
-    const properties = await getProperties();
-    return properties.map((p) => ({ slug: p.slug }));
-  } catch {
-    return [];
-  }
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,

@@ -4,7 +4,7 @@ import HomeScripts from "@/components/public/HomeScripts";
 import { getProperties, getPosts } from "@/lib/data";
 import type { Metadata } from "next";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Home — AJ Commercial Group",

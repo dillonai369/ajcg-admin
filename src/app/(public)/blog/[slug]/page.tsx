@@ -3,16 +3,7 @@ import { notFound } from "next/navigation";
 import { getPost, getPosts } from "@/lib/data";
 import type { Metadata } from "next";
 
-export const revalidate = 60;
-
-export async function generateStaticParams() {
-  try {
-    const posts = await getPosts();
-    return posts.map((p) => ({ slug: p.slug }));
-  } catch {
-    return [];
-  }
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
