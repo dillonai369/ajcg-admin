@@ -4,9 +4,7 @@ import { getProperty, getProperties, getBrokers } from "@/lib/data";
 import type { Metadata } from "next";
 import type { Broker } from "@/lib/types";
 
-// Cached at the edge for 60s, then refreshed in the background. Admin saves
-// call revalidatePath() so edits show up immediately, regardless of this window.
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,

@@ -3,9 +3,9 @@ import { getProperties } from "@/lib/data";
 import type { Metadata } from "next";
 import type { Property } from "@/lib/types";
 
-// Cached at the edge for 60s, then refreshed in the background. Admin saves
-// call revalidatePath() so edits show up immediately, regardless of this window.
-export const revalidate = 60;
+// Always pull fresh from Supabase so admin-added listings show up immediately.
+// (Static cache from build time was excluding new rows even after revalidation.)
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Recently Sold — AJ Commercial Group",
