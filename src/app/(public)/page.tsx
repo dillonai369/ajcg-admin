@@ -4,7 +4,9 @@ import HomeScripts from "@/components/public/HomeScripts";
 import { getProperties, getPosts } from "@/lib/data";
 import type { Metadata } from "next";
 
-export const dynamic = "force-dynamic";
+// Cached at the edge for 60s, then refreshed in the background. Admin saves
+// call revalidatePath() so edits show up immediately, regardless of this window.
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Home — AJ Commercial Group",
