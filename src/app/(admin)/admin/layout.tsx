@@ -17,9 +17,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="flex min-h-screen">
       <Sidebar isSuperAdmin={access.is_super_admin} />
-      <main className="ml-60 min-h-screen flex flex-col min-w-0">{children}</main>
+      <main className="flex-1 flex flex-col min-w-0">{children}</main>
     </div>
   );
 }

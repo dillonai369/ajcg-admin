@@ -29,7 +29,7 @@ export default function Sidebar({ isSuperAdmin = false }: { isSuperAdmin?: boole
   const subline = user?.primaryEmailAddress?.emailAddress || "Admin";
 
   return (
-    <aside className="sidebar w-60 fixed inset-y-0 left-0 flex flex-col overflow-y-auto z-40">
+    <aside className="sidebar w-60 flex-shrink-0 flex flex-col sticky top-0 h-screen overflow-y-auto">
       <div className="px-5 py-6 border-b border-white/10 flex items-center justify-center">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
