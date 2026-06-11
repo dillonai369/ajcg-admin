@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/dillai/.claude/**)",
+      "Bash(higgsfield auth *)",
+      "Bash(higgsfield account *)",
+      "Bash(higgsfield model *)",
+      "Bash(higgsfield generate *)",
+      "Bash(chmod +x /tmp/gen_kpro_images.sh)",
+      "Bash(/tmp/gen_kpro_images.sh)"
+    ]
+  }
+}
