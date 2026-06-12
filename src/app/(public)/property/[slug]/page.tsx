@@ -38,7 +38,7 @@ function brokerCardPhoto(b: Broker) {
  *  • property-body grid: left content (description + highlights),
  *    right "Key Details" card built from optional fields.
  *  • Optional photo gallery (when images.length > 1).
- *  • Optional Listing Team strip if property.brokers contains broker slugs.
+ *  • Optional Listing Team strip if property.broker_slugs contains broker slugs.
  *  • Closing CTA.
  */
 export default async function PropertyPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -51,9 +51,10 @@ export default async function PropertyPage({ params }: { params: Promise<{ slug:
 
   // Listing team — look up broker docs by slug.
   let team: Broker[] = [];
-  if (property.brokers && property.brokers.length > 0) {
+  if (property.broker_slugs && property.broker_slugs.length > 0) {
     const allBrokers = await getBrokers();
-    team = property.brokers
+    // Preserve the order from broker_slugs so Joey/Anthony lead, then specific brokers.
+    team = property.broker_slugs
       .map((slug) => allBrokers.find((b) => b.slug === slug))
       .filter((b): b is Broker => !!b);
   }

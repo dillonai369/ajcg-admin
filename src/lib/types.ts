@@ -81,7 +81,7 @@ export type Property = {
   noi?: string;
   gross_income?: string;
   highlights?: string[];
-  brokers?: string[]; // assigned broker slugs
+  broker_slugs?: string[]; // assigned broker slugs (matches Supabase column name)
   feature_on_homepage?: boolean;
   show_in_sold_carousel?: boolean;
   hide_sale_price?: boolean;
