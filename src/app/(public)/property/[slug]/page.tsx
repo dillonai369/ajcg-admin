@@ -60,23 +60,26 @@ export default async function PropertyPage({ params }: { params: Promise<{ slug:
   }
 
   // Build the "Key Details" rows from whichever optional fields exist.
+  // Order mirrors the legacy static-site property pages.
   const facts: Array<{ label: string; value: string }> = [];
   if (property.address) facts.push({ label: "Address", value: property.address });
   else if (property.location) facts.push({ label: "Address", value: property.location });
+  if (property.type) facts.push({ label: "Asset Type", value: property.type });
+  if (property.submarket) facts.push({ label: "Submarket", value: property.submarket });
+  if (property.neighborhood) facts.push({ label: "Neighborhood", value: property.neighborhood });
   if (property.units) facts.push({ label: "Total Units", value: property.units });
   if (property.year_built) facts.push({ label: "Year Built", value: property.year_built });
   if (property.year_renovated) facts.push({ label: "Year Renovated", value: property.year_renovated });
   if (property.total_sqft) facts.push({ label: "Total SqFt", value: property.total_sqft });
   if (property.lot_size) facts.push({ label: "Lot Size", value: property.lot_size });
+  if (property.building_class) facts.push({ label: "Building Class", value: property.building_class });
+  if (property.parking) facts.push({ label: "Parking", value: property.parking });
+  if (property.heating) facts.push({ label: "Heating", value: property.heating });
   if (property.cap_rate) facts.push({ label: "Cap Rate", value: property.cap_rate });
   if (property.noi) facts.push({ label: "NOI", value: property.noi });
   if (property.gross_income) facts.push({ label: "Gross Income", value: property.gross_income });
   if (property.sale_price && !property.hide_sale_price) facts.push({ label: "Sale Price", value: property.sale_price });
   if (property.sale_date) facts.push({ label: "Sale Date", value: property.sale_date });
-  if (property.building_class) facts.push({ label: "Building Class", value: property.building_class });
-  if (property.parking) facts.push({ label: "Parking", value: property.parking });
-  if (property.heating) facts.push({ label: "Heating", value: property.heating });
-  if (property.neighborhood) facts.push({ label: "Neighborhood", value: property.neighborhood });
 
   return (
     <>
