@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { getBroker, saveBroker, deleteBroker } from "@/lib/data";
 
 type Ctx = { params: Promise<{ slug: string }> };
 
 function invalidatePublicCaches(slug: string) {
+  revalidateTag("brokers");
   revalidatePath("/our-team");
   revalidatePath("/");
   revalidatePath(`/broker/${slug}`);

@@ -9,8 +9,23 @@
  */
 import fs from "fs/promises";
 import path from "path";
+import { unstable_cache } from "next/cache";
 import type { Broker, Property, Post } from "./types";
 import { isSupabaseConfigured, supabaseAdmin } from "./supabase";
+
+// =================================================================
+// CACHING NOTES
+// =================================================================
+// Each public-site read goes through unstable_cache so we don't hit Supabase
+// on every visitor click. Cache lives for 60s, then refreshes in the
+// background. Admin save handlers call revalidateTag("brokers" | "properties"
+// | "posts") to invalidate immediately when content changes.
+//
+// This is intentionally done at the data layer (not the page layer) so we
+// keep the pages' `force-dynamic` flag. That keeps build-time pre-rendering
+// off — pages still render on each request, they just don't re-query
+// Supabase if the cache is warm.
+const CACHE_TTL_SECONDS = 60;
 
 // =================================================================
 // JSON FALLBACK (kept for local dev before Supabase is configured)
@@ -50,25 +65,37 @@ async function writeJsonAtomic(file: string, data: unknown): Promise<void> {
 // =================================================================
 // BROKERS
 // =================================================================
-export async function getBrokers(): Promise<Broker[]> {
-  if (isSupabaseConfigured) {
+const _getBrokersCached = unstable_cache(
+  async (): Promise<Broker[]> => {
     const { data, error } = await supabaseAdmin()
       .from("brokers")
       .select("*")
       .order("display_order", { ascending: true });
     if (error) throw error;
     return (data ?? []) as Broker[];
-  }
+  },
+  ["brokers-all"],
+  { revalidate: CACHE_TTL_SECONDS, tags: ["brokers"] },
+);
+
+export async function getBrokers(): Promise<Broker[]> {
+  if (isSupabaseConfigured) return _getBrokersCached();
   const list = await readJson<Broker[]>(BROKERS_FILE);
   return [...list].sort((a, b) => (a.display_order ?? 999) - (b.display_order ?? 999));
 }
 
-export async function getBroker(slug: string): Promise<Broker | null> {
-  if (isSupabaseConfigured) {
+const _getBrokerCached = unstable_cache(
+  async (slug: string): Promise<Broker | null> => {
     const { data, error } = await supabaseAdmin().from("brokers").select("*").eq("slug", slug).maybeSingle();
     if (error) throw error;
     return (data as Broker) ?? null;
-  }
+  },
+  ["broker-by-slug"],
+  { revalidate: CACHE_TTL_SECONDS, tags: ["brokers"] },
+);
+
+export async function getBroker(slug: string): Promise<Broker | null> {
+  if (isSupabaseConfigured) return _getBrokerCached(slug);
   const list = await readJson<Broker[]>(BROKERS_FILE);
   return list.find((b) => b.slug === slug) ?? null;
 }
@@ -158,28 +185,37 @@ export async function deleteBroker(slug: string): Promise<boolean> {
 // =================================================================
 // PROPERTIES
 // =================================================================
-export async function getProperties(): Promise<Property[]> {
-  if (isSupabaseConfigured) {
+const _getPropertiesCached = unstable_cache(
+  async (): Promise<Property[]> => {
     // Order by created_at desc so newly-added listings always appear first.
-    // Falls back to sale_date for ties, then name. This means a listing
-    // Mary or Joey adds in the admin shows up at the top of /recently-sold
-    // immediately (after the 60s ISR cache flush).
     const { data, error } = await supabaseAdmin()
       .from("properties")
       .select("*")
       .order("created_at", { ascending: false, nullsFirst: false });
     if (error) throw error;
     return (data ?? []) as Property[];
-  }
+  },
+  ["properties-all"],
+  { revalidate: CACHE_TTL_SECONDS, tags: ["properties"] },
+);
+
+export async function getProperties(): Promise<Property[]> {
+  if (isSupabaseConfigured) return _getPropertiesCached();
   return readJson<Property[]>(PROPERTIES_FILE);
 }
 
-export async function getProperty(slug: string): Promise<Property | null> {
-  if (isSupabaseConfigured) {
+const _getPropertyCached = unstable_cache(
+  async (slug: string): Promise<Property | null> => {
     const { data, error } = await supabaseAdmin().from("properties").select("*").eq("slug", slug).maybeSingle();
     if (error) throw error;
     return (data as Property) ?? null;
-  }
+  },
+  ["property-by-slug"],
+  { revalidate: CACHE_TTL_SECONDS, tags: ["properties"] },
+);
+
+export async function getProperty(slug: string): Promise<Property | null> {
+  if (isSupabaseConfigured) return _getPropertyCached(slug);
   const list = await readJson<Property[]>(PROPERTIES_FILE);
   return list.find((p) => p.slug === slug) ?? null;
 }
@@ -258,24 +294,36 @@ export async function deleteProperty(slug: string): Promise<boolean> {
 // =================================================================
 // POSTS
 // =================================================================
-export async function getPosts(): Promise<Post[]> {
-  if (isSupabaseConfigured) {
+const _getPostsCached = unstable_cache(
+  async (): Promise<Post[]> => {
     const { data, error } = await supabaseAdmin()
       .from("posts")
       .select("*")
       .order("published_at", { ascending: false, nullsFirst: false });
     if (error) throw error;
     return (data ?? []) as Post[];
-  }
+  },
+  ["posts-all"],
+  { revalidate: CACHE_TTL_SECONDS, tags: ["posts"] },
+);
+
+export async function getPosts(): Promise<Post[]> {
+  if (isSupabaseConfigured) return _getPostsCached();
   return readJson<Post[]>(POSTS_FILE);
 }
 
-export async function getPost(slug: string): Promise<Post | null> {
-  if (isSupabaseConfigured) {
+const _getPostCached = unstable_cache(
+  async (slug: string): Promise<Post | null> => {
     const { data, error } = await supabaseAdmin().from("posts").select("*").eq("slug", slug).maybeSingle();
     if (error) throw error;
     return (data as Post) ?? null;
-  }
+  },
+  ["post-by-slug"],
+  { revalidate: CACHE_TTL_SECONDS, tags: ["posts"] },
+);
+
+export async function getPost(slug: string): Promise<Post | null> {
+  if (isSupabaseConfigured) return _getPostCached(slug);
   const list = await readJson<Post[]>(POSTS_FILE);
   return list.find((p) => p.slug === slug) ?? null;
 }

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { getProperties, createProperty } from "@/lib/data";
 import { slugify } from "@/lib/utils";
 
@@ -13,7 +13,8 @@ export async function POST(req: NextRequest) {
   const slug = body.slug || slugify(body.name || "new-listing");
   try {
     const created = await createProperty({ ...body, slug });
-    // Force-invalidate the public pages that show this listing
+    // Force-invalidate the cached data + the public pages that show this listing
+    revalidateTag("properties");
     revalidatePath("/recently-sold");
     revalidatePath("/");
     revalidatePath(`/property/${slug}`);

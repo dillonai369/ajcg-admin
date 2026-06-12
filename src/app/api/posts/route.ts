@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { getPosts, createPost } from "@/lib/data";
 import { slugify } from "@/lib/utils";
 
@@ -13,6 +13,7 @@ export async function POST(req: NextRequest) {
   const slug = body.slug || slugify(body.title || "new-post");
   try {
     const created = await createPost({ ...body, slug });
+    revalidateTag("posts");
     revalidatePath("/blog");
     revalidatePath("/");
     revalidatePath(`/blog/${slug}`);
