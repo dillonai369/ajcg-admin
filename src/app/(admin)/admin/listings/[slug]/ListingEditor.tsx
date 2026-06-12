@@ -130,7 +130,14 @@ export default function ListingEditor({ initial }: { initial: Property }) {
 
           <div className="card p-6">
             <div className="section-header"><ImageIcon className="w-4 h-4" /> Property photos</div>
-            <PhotoUpload images={form.images} onChange={(images) => patch({ images, hero_image: images[0] ?? form.hero_image })} />
+            <PhotoUpload
+              images={form.images}
+              onChange={(images) =>
+                // First image is the hero. If the user deletes all photos, clear the hero
+                // too so the listing falls back to the default placeholder on the live site.
+                patch({ images, hero_image: images[0] ?? null })
+              }
+            />
           </div>
 
           <div className="card p-6">
