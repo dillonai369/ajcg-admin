@@ -174,12 +174,6 @@ export default async function HomePage() {
             >
               <div className="founders-stack-tag">Joey &amp; Anthony · Chicago</div>
             </div>
-            <div
-              className="founders-stack-photo wide"
-              style={{ backgroundImage: "url('/assets/team/IMG_4602.jpg')", backgroundPosition: "center 35%" }}
-            >
-              <div className="founders-stack-tag">Behind every deal</div>
-            </div>
           </div>
         </div>
       </section>
