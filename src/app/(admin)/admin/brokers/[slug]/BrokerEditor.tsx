@@ -1,11 +1,21 @@
 "use client";
 
-import { ChangeEvent, useRef, useState } from "react";
+import { ChangeEvent, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, UserCircle, Phone, BookOpen, Award, GraduationCap, TrendingUp } from "lucide-react";
-import type { Broker } from "@/lib/types";
+import { ArrowLeft, UserCircle, Phone, BookOpen, Award, GraduationCap, TrendingUp, Plus, X } from "lucide-react";
+import type { Broker, TrackRecordItem } from "@/lib/types";
 import { Field, FieldInput, FieldSelect, FieldTextarea, FieldLabel } from "@/components/ui/FieldInput";
 import { initials, resolveImageUrl } from "@/lib/utils";
+
+// Lightweight property shape the picker uses to populate a new track-record entry.
+type PropertyOption = {
+  slug: string;
+  name: string;
+  location: string;
+  units: string;
+  type: string;
+  hero_image: string;
+};
 
 const TITLE_OPTIONS = [
   "Founder · Multifamily Broker",
@@ -17,16 +27,63 @@ const TITLE_OPTIONS = [
   "Data Analyst",
 ];
 
-export default function BrokerEditor({ initial }: { initial: Broker }) {
+export default function BrokerEditor({
+  initial,
+  properties = [],
+}: {
+  initial: Broker;
+  properties?: PropertyOption[];
+}) {
   const [form, setForm] = useState<Broker>({
     ...initial,
     specialties: initial.specialties ?? [],
+    track_record: initial.track_record ?? [],
   });
   const [saving, setSaving] = useState(false);
   const [savedAt, setSavedAt] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [newSpec, setNewSpec] = useState("");
+  const [pickerSlug, setPickerSlug] = useState("");
   const fileRef = useRef<HTMLInputElement | null>(null);
+
+  // Filter the picker to properties NOT already in this broker's track record,
+  // sorted by name so the dropdown is easy to scan.
+  const pickerOptions = useMemo(() => {
+    const taken = new Set(
+      (form.track_record ?? []).map((t) => t.property_slug?.replace(/^property-/, "")),
+    );
+    return properties
+      .filter((p) => !taken.has(p.slug))
+      .slice()
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }, [properties, form.track_record]);
+
+  // Build a fresh TrackRecordItem from a selected property and prepend it.
+  // Most-recent deals at the top mirrors how the public page already renders.
+  function addTrackRecord(propertySlug: string) {
+    if (!propertySlug) return;
+    const p = properties.find((p) => p.slug === propertySlug);
+    if (!p) return;
+    const subtitle = p.location
+      ? p.location
+      : [p.units && `${p.units}-Unit`, p.type].filter(Boolean).join(" · ");
+    const entry: TrackRecordItem = {
+      property_slug: p.slug,
+      name: p.name,
+      subtitle,
+      image: p.hero_image,
+    };
+    patch({ track_record: [entry, ...(form.track_record ?? [])] });
+    setPickerSlug("");
+  }
+
+  function removeTrackRecord(slug: string) {
+    patch({
+      track_record: (form.track_record ?? []).filter(
+        (t) => (t.property_slug || "").replace(/^property-/, "") !== slug,
+      ),
+    });
+  }
 
   function patch(p: Partial<Broker>) {
     setForm((f) => ({ ...f, ...p }));
@@ -244,25 +301,69 @@ export default function BrokerEditor({ initial }: { initial: Broker }) {
 
           <div className="card p-6">
             <div className="section-header"><TrendingUp className="w-4 h-4" /> Recent transactions</div>
-            <p className="text-xs text-slate-500 -mt-3 mb-4">Auto-pulled from this broker&apos;s track record in the dataset.</p>
+            <p className="text-xs text-slate-500 -mt-3 mb-4">
+              Deals shown on this broker&apos;s public profile. Add or remove properties below — changes
+              go live within ~30 seconds of saving.
+            </p>
+
             {form.track_record?.length ? (
-              <div className="space-y-2">
-                {form.track_record.map((t) => (
-                  <label
-                    key={t.property_slug}
-                    className="flex items-center gap-3 p-2 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-50"
-                  >
-                    <input type="checkbox" defaultChecked />
-                    <div className="flex-1 text-sm">
-                      <div className="font-medium">{t.name}</div>
-                      <div className="text-xs text-slate-500">{t.subtitle}</div>
+              <div className="space-y-2 mb-4">
+                {form.track_record.map((t) => {
+                  const cleanSlug = (t.property_slug || "").replace(/^property-/, "");
+                  return (
+                    <div
+                      key={cleanSlug}
+                      className="flex items-center gap-3 p-2 border border-slate-200 rounded-lg"
+                    >
+                      <div className="flex-1 text-sm min-w-0">
+                        <div className="font-medium truncate">{t.name}</div>
+                        <div className="text-xs text-slate-500 truncate">{t.subtitle}</div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeTrackRecord(cleanSlug)}
+                        className="btn-ghost p-1.5 rounded text-slate-500 hover:text-red-600"
+                        title="Remove from track record"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
                     </div>
-                  </label>
-                ))}
+                  );
+                })}
               </div>
             ) : (
-              <p className="text-xs text-slate-400">No recent transactions in the dataset.</p>
+              <p className="text-xs text-slate-400 mb-4">No deals listed yet. Add the first one below.</p>
             )}
+
+            <div className="border-t border-slate-200 pt-4">
+              <FieldLabel>Add property</FieldLabel>
+              <div className="flex gap-2 mt-1">
+                <FieldSelect
+                  value={pickerSlug}
+                  onChange={(e) => setPickerSlug(e.target.value)}
+                  className="flex-1"
+                >
+                  <option value="">— Pick a listing —</option>
+                  {pickerOptions.map((p) => (
+                    <option key={p.slug} value={p.slug}>
+                      {p.name}
+                      {p.location ? ` — ${p.location}` : ""}
+                    </option>
+                  ))}
+                </FieldSelect>
+                <button
+                  type="button"
+                  onClick={() => addTrackRecord(pickerSlug)}
+                  disabled={!pickerSlug}
+                  className="btn btn-primary inline-flex items-center gap-1 px-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Plus className="w-4 h-4" /> Add
+                </button>
+              </div>
+              <p className="text-xs text-slate-500 mt-2">
+                Only listings not already in this track record appear in the dropdown.
+              </p>
+            </div>
           </div>
         </div>
 
