@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getBroker, getBrokers } from "@/lib/data";
+import { getBroker, getBrokers, getProperties } from "@/lib/data";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -36,21 +36,31 @@ function telHref(phone?: string) {
  * Layout:
  *  • Dark broker-hero with photo + name + click-to-call/email block.
  *  • "About" bio (paragraph splits the broker.bio on blank lines).
- *  • "Recent transactions closed by X" — renders broker.track_record as city-cards.
+ *  • "Recent transactions closed by X" — derived from every property whose
+ *    broker_slugs array contains this broker. Single source of truth: assign
+ *    a broker to a listing and that listing automatically appears here.
  *  • Closing CTA.
  */
 export default async function BrokerPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const broker = await getBroker(slug);
+  const [broker, allProperties] = await Promise.all([getBroker(slug), getProperties()]);
   if (!broker) notFound();
 
   const heroPhoto = normalizeImg(broker.photo_url);
   const bioParagraphs = (broker.bio || "").split(/\n\s*\n/).map((s) => s.trim()).filter(Boolean);
   const tel = telHref(broker.phone_raw || broker.phone);
 
-  // Track-record entry slugs in the JSON are stored with the "property-" prefix
-  // ("property-toledo-river-birch"). Our routes use just the slug part.
-  const cleanPropertySlug = (s?: string) => (s || "").replace(/^property-/, "");
+  // Derive "Recent transactions" from every listing this broker is assigned to.
+  // Sort by sale_date desc (most-recent deals first), then fall back to
+  // name for stable ordering when dates are missing.
+  const brokerProperties = allProperties
+    .filter((p) => Array.isArray(p.broker_slugs) && p.broker_slugs.includes(broker.slug))
+    .sort((a, b) => {
+      const aDate = a.sale_date || "";
+      const bDate = b.sale_date || "";
+      if (aDate !== bDate) return bDate.localeCompare(aDate);
+      return (a.name || "").localeCompare(b.name || "");
+    });
 
   return (
     <>
@@ -101,7 +111,7 @@ export default async function BrokerPage({ params }: { params: Promise<{ slug: s
         </div>
       </section>
 
-      {broker.track_record && broker.track_record.length > 0 && (
+      {brokerProperties.length > 0 && (
         <section className="content-section alt">
           <div className="wrap">
             <div className="creatives-head">
@@ -115,11 +125,14 @@ export default async function BrokerPage({ params }: { params: Promise<{ slug: s
               </p>
             </div>
             <div className="city-grid" style={{ marginTop: 50 }}>
-              {broker.track_record.map((tr, i) => {
-                const img = normalizeImg(tr.image);
-                const href = `/property/${cleanPropertySlug(tr.property_slug)}`;
+              {brokerProperties.map((p) => {
+                const img = normalizeImg(p.hero_image || p.images?.[0]);
+                const href = `/property/${p.slug}`;
+                const subtitle =
+                  p.location ||
+                  [p.units ? `${p.units}-Unit` : null, p.type].filter(Boolean).join(" · ");
                 return (
-                  <Link key={i} className="city-card" href={href}>
+                  <Link key={p.slug} className="city-card" href={href}>
                     <div
                       className="city-img"
                       style={{
@@ -127,8 +140,8 @@ export default async function BrokerPage({ params }: { params: Promise<{ slug: s
                       }}
                     ></div>
                     <div className="city-card-body">
-                      <div className="city-name">{tr.name}</div>
-                      <div className="city-units">{tr.subtitle}</div>
+                      <div className="city-name">{p.name}</div>
+                      <div className="city-units">{subtitle}</div>
                       <span className="btn btn-primary">View Listing →</span>
                     </div>
                   </Link>

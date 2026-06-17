@@ -2,12 +2,13 @@
 
 import { ChangeEvent, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, UserCircle, Phone, BookOpen, Award, GraduationCap, TrendingUp, Plus, X } from "lucide-react";
-import type { Broker, TrackRecordItem } from "@/lib/types";
+import { ArrowLeft, UserCircle, Phone, BookOpen, Award, GraduationCap, TrendingUp } from "lucide-react";
+import type { Broker } from "@/lib/types";
 import { Field, FieldInput, FieldSelect, FieldTextarea, FieldLabel } from "@/components/ui/FieldInput";
 import { initials, resolveImageUrl } from "@/lib/utils";
 
-// Lightweight property shape the picker uses to populate a new track-record entry.
+// Lightweight property shape used for the read-only "Recent transactions"
+// preview — pulled from listings where this broker is in broker_slugs.
 type PropertyOption = {
   slug: string;
   name: string;
@@ -15,6 +16,7 @@ type PropertyOption = {
   units: string;
   type: string;
   hero_image: string;
+  broker_slugs?: string[];
 };
 
 const TITLE_OPTIONS = [
@@ -43,47 +45,18 @@ export default function BrokerEditor({
   const [savedAt, setSavedAt] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [newSpec, setNewSpec] = useState("");
-  const [pickerSlug, setPickerSlug] = useState("");
   const fileRef = useRef<HTMLInputElement | null>(null);
 
-  // Filter the picker to properties NOT already in this broker's track record,
-  // sorted by name so the dropdown is easy to scan.
-  const pickerOptions = useMemo(() => {
-    const taken = new Set(
-      (form.track_record ?? []).map((t) => t.property_slug?.replace(/^property-/, "")),
-    );
+  // Recent transactions are DERIVED from listings — every property where this
+  // broker is in broker_slugs shows up here automatically. To add a deal,
+  // open the listing and add the broker; to remove, open the listing and
+  // unassign. This editor is read-only on purpose: one source of truth.
+  const assignedListings = useMemo(() => {
     return properties
-      .filter((p) => !taken.has(p.slug))
+      .filter((p) => Array.isArray(p.broker_slugs) && p.broker_slugs.includes(form.slug))
       .slice()
       .sort((a, b) => a.name.localeCompare(b.name));
-  }, [properties, form.track_record]);
-
-  // Build a fresh TrackRecordItem from a selected property and prepend it.
-  // Most-recent deals at the top mirrors how the public page already renders.
-  function addTrackRecord(propertySlug: string) {
-    if (!propertySlug) return;
-    const p = properties.find((p) => p.slug === propertySlug);
-    if (!p) return;
-    const subtitle = p.location
-      ? p.location
-      : [p.units && `${p.units}-Unit`, p.type].filter(Boolean).join(" · ");
-    const entry: TrackRecordItem = {
-      property_slug: p.slug,
-      name: p.name,
-      subtitle,
-      image: p.hero_image,
-    };
-    patch({ track_record: [entry, ...(form.track_record ?? [])] });
-    setPickerSlug("");
-  }
-
-  function removeTrackRecord(slug: string) {
-    patch({
-      track_record: (form.track_record ?? []).filter(
-        (t) => (t.property_slug || "").replace(/^property-/, "") !== slug,
-      ),
-    });
-  }
+  }, [properties, form.slug]);
 
   function patch(p: Partial<Broker>) {
     setForm((f) => ({ ...f, ...p }));
@@ -302,68 +275,33 @@ export default function BrokerEditor({
           <div className="card p-6">
             <div className="section-header"><TrendingUp className="w-4 h-4" /> Recent transactions</div>
             <p className="text-xs text-slate-500 -mt-3 mb-4">
-              Deals shown on this broker&apos;s public profile. Add or remove properties below — changes
-              go live within ~30 seconds of saving.
+              These are listings where this broker is assigned. To add a deal, open the listing in
+              <strong> Listings</strong> and add the broker there. To remove one, unassign the broker on
+              the listing. Changes show on the public profile within ~30 seconds.
             </p>
 
-            {form.track_record?.length ? (
-              <div className="space-y-2 mb-4">
-                {form.track_record.map((t) => {
-                  const cleanSlug = (t.property_slug || "").replace(/^property-/, "");
-                  return (
-                    <div
-                      key={cleanSlug}
-                      className="flex items-center gap-3 p-2 border border-slate-200 rounded-lg"
-                    >
-                      <div className="flex-1 text-sm min-w-0">
-                        <div className="font-medium truncate">{t.name}</div>
-                        <div className="text-xs text-slate-500 truncate">{t.subtitle}</div>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => removeTrackRecord(cleanSlug)}
-                        className="btn-ghost p-1.5 rounded text-slate-500 hover:text-red-600"
-                        title="Remove from track record"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
+            {assignedListings.length ? (
+              <div className="space-y-2">
+                {assignedListings.map((p) => (
+                  <Link
+                    key={p.slug}
+                    href={`/admin/listings/${p.slug}`}
+                    className="flex items-center gap-3 p-2 border border-slate-200 rounded-lg hover:bg-slate-50"
+                  >
+                    <div className="flex-1 text-sm min-w-0">
+                      <div className="font-medium truncate">{p.name}</div>
+                      <div className="text-xs text-slate-500 truncate">{p.location || p.units}</div>
                     </div>
-                  );
-                })}
+                    <div className="text-xs text-slate-400">Edit listing →</div>
+                  </Link>
+                ))}
               </div>
             ) : (
-              <p className="text-xs text-slate-400 mb-4">No deals listed yet. Add the first one below.</p>
-            )}
-
-            <div className="border-t border-slate-200 pt-4">
-              <FieldLabel>Add property</FieldLabel>
-              <div className="flex gap-2 mt-1">
-                <FieldSelect
-                  value={pickerSlug}
-                  onChange={(e) => setPickerSlug(e.target.value)}
-                  className="flex-1"
-                >
-                  <option value="">— Pick a listing —</option>
-                  {pickerOptions.map((p) => (
-                    <option key={p.slug} value={p.slug}>
-                      {p.name}
-                      {p.location ? ` — ${p.location}` : ""}
-                    </option>
-                  ))}
-                </FieldSelect>
-                <button
-                  type="button"
-                  onClick={() => addTrackRecord(pickerSlug)}
-                  disabled={!pickerSlug}
-                  className="btn btn-primary inline-flex items-center gap-1 px-3 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <Plus className="w-4 h-4" /> Add
-                </button>
-              </div>
-              <p className="text-xs text-slate-500 mt-2">
-                Only listings not already in this track record appear in the dropdown.
+              <p className="text-xs text-slate-400">
+                Not assigned to any listings yet. Go to <strong>Listings</strong>, open a property, and
+                add this broker on that listing.
               </p>
-            </div>
+            )}
           </div>
         </div>
 

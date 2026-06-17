@@ -8,8 +8,9 @@ export default async function BrokerEditorPage({ params }: Props) {
   const { slug } = await params;
   const [broker, properties] = await Promise.all([getBroker(slug), getProperties()]);
   if (!broker) notFound();
-  // Hand the editor the lightweight property data it needs to populate the
-  // "Add to Recent Transactions" picker (slug, name, location, hero photo).
+  // Hand the editor the lightweight property data it needs to derive the
+  // "Recent transactions" preview (which listings this broker is assigned to).
+  // broker_slugs is the field we filter on — the single source of truth.
   const propertyOptions = properties.map((p) => ({
     slug: p.slug,
     name: p.name,
@@ -17,6 +18,7 @@ export default async function BrokerEditorPage({ params }: Props) {
     units: p.units || "",
     type: p.type || "",
     hero_image: p.hero_image || p.images?.[0] || "",
+    broker_slugs: p.broker_slugs || [],
   }));
   return <BrokerEditor initial={broker} properties={propertyOptions} />;
 }
