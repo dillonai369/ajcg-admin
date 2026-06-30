@@ -44,7 +44,10 @@ a { color: inherit; text-decoration: none; }
 button { font-family: inherit; cursor: pointer; }
 
 /* ---------- LAYOUT ---------- */
-.wrap { max-width: 1520px; margin: 0 auto; padding: 0 32px; }
+/* Content max-width is wide enough to fill large desktops without going edge-to-edge.
+   Originally capped at 1520px which made the site feel "zoomed out" on 1920px+
+   monitors. 1800px gives big screens room to breathe without losing centered focus. */
+.wrap { max-width: 1800px; margin: 0 auto; padding: 0 32px; }
 @media (max-width: 1080px) { .wrap { padding: 0 24px; } }
 @media (max-width: 640px) { .wrap { padding: 0 18px; } }
 
@@ -1234,7 +1237,11 @@ body.menu-open { overflow: hidden; touch-action: none; }
 .feature-list strong { color: var(--navy); display: block; margin-bottom: 2px; font-weight: 600; font-size: 16px; }
 
 /* ---------- CITY GROUP CARDS (recently sold city groups) ---------- */
+/* Default: 3 columns. Below 980px: 2. Below 640px: 1. Above 1600px (big desktops
+   like Joey's): 4 columns so the listings grid actually fills the screen instead
+   of leaving big empty bands on either side. */
 .city-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+@media (min-width: 1600px) { .city-grid { grid-template-columns: repeat(4, 1fr); } }
 @media (max-width: 980px) { .city-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 640px) { .city-grid { grid-template-columns: 1fr; } }
 .city-card {
