@@ -5,15 +5,31 @@
  * Expects: { action: "polish" | "expand" | "seo" | "describe-listing", input: string, context?: any }
  * Returns: { output: string }
  *
- * Uses Claude Opus 4.6 — Dillon's preferred top-tier model.
+ * Gated to approved admin users only, and rate-limited per user, so this
+ * endpoint can't be scripted to burn Anthropic credits.
  */
 import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
+import { requireApproved } from "@/lib/access";
 
-// Claude Haiku 4.5 — fastest & cheapest. Plenty good for listing descriptions
-// and blog drafting (~$0.01-0.02 per generation). Bump up to claude-sonnet-4-6
-// if quality needs a step up.
-const MODEL = "claude-haiku-4-5";
+// Claude Fable 5 — Anthropic's most capable generally-available model, per
+// Dillon's standing preference to always use the top-tier model.
+const MODEL = "claude-fable-5";
+
+// Simple in-memory rate limit: max N generations per user per rolling window.
+// Resets on cold start, which is fine — it exists to stop runaway loops, not
+// to be a hardened quota. Keyed by the caller's email.
+const RATE_LIMIT = 30;
+const WINDOW_MS = 60_000;
+const hits = new Map<string, number[]>();
+
+function rateLimited(key: string): boolean {
+  const now = Date.now();
+  const recent = (hits.get(key) ?? []).filter((t) => now - t < WINDOW_MS);
+  recent.push(now);
+  hits.set(key, recent);
+  return recent.length > RATE_LIMIT;
+}
 
 const SYSTEM_PROMPTS: Record<string, string> = {
   polish:
@@ -27,6 +43,15 @@ const SYSTEM_PROMPTS: Record<string, string> = {
 };
 
 export async function POST(req: Request) {
+  const gate = await requireApproved();
+  if (gate.response) return gate.response;
+  if (rateLimited(gate.user.email)) {
+    return NextResponse.json(
+      { error: "Rate limit reached — please wait a minute and try again." },
+      { status: 429 },
+    );
+  }
+
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
     return NextResponse.json(

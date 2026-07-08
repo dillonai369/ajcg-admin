@@ -66,7 +66,13 @@ export default function SiteFooter() {
           </div>
         </div>
         <div className="footer-bottom">
-          <div>© 2026 AJ Commercial Group · Licensed Real Estate Brokerage in Illinois</div>
+          <div>
+            © 2026 AJ Commercial Group Inc. · Licensed Real Estate Brokerage in Illinois
+            {" · "}
+            <Link href="/privacy" style={{ color: "inherit", textDecoration: "underline" }}>Privacy Policy</Link>
+            {" · "}
+            <Link href="/terms" style={{ color: "inherit", textDecoration: "underline" }}>Terms</Link>
+          </div>
           <div className="footer-socials">
             <a href="https://www.linkedin.com/company/ajcommercialgroup/" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">

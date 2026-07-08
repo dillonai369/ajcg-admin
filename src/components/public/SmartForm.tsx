@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, ReactNode, useState } from "react";
+import { FormEvent, ReactNode, useState, useRef } from "react";
 
 /**
  * Client-side wrapper around <form> that ports the logic in
@@ -28,6 +28,9 @@ export default function SmartForm({
 }) {
   const [status, setStatus] = useState<{ message: string; isError: boolean } | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  // Timestamp when the form mounted — the /api/lead relay treats submissions
+  // that arrive <2s after load as bots. Set once on first render.
+  const loadedAtRef = useRef<number>(Date.now());
 
   function captureUtm(): Record<string, string> {
     if (typeof window === "undefined") return {};
@@ -77,6 +80,7 @@ export default function SmartForm({
       full_name: rawName || `${first_name} ${last_name}`.trim(),
       form_type: formType,
       source: "ajcommercialgroup.com",
+      __form_loaded_at: loadedAtRef.current,
       submitted_at: new Date().toISOString(),
       page_url: typeof window !== "undefined" ? window.location.href : "",
       referrer: typeof document !== "undefined" ? document.referrer : "",
@@ -93,9 +97,15 @@ export default function SmartForm({
       broker_slug: typeof data.broker_slug === "string" ? data.broker_slug : undefined,
     };
 
+    // Fire both endpoints in parallel. The lead is "captured" if EITHER the GHL
+    // relay (/api/lead) or the Supabase inquiry store (/api/inquiries) accepts
+    // it — we only show failure if both are unreachable, so a prospect is never
+    // wrongly told "we got it" when in fact nothing was recorded.
+    const ok = (r: PromiseSettledResult<Response>) =>
+      r.status === "fulfilled" && r.value.ok;
+
     try {
-      // Fire both endpoints in parallel — neither blocks the success message.
-      await Promise.allSettled([
+      const results = await Promise.allSettled([
         fetch("/api/lead", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -107,18 +117,29 @@ export default function SmartForm({
           body: JSON.stringify(inquiryPayload),
         }),
       ]);
+
+      const captured = results.some(ok);
+      if (captured) {
+        setStatus({
+          message: "Thanks — we got it. A real broker will reach out within one business day.",
+          isError: false,
+        });
+        form.reset();
+      } else {
+        console.error("Lead submission failed on both endpoints", results);
+        setStatus({
+          message:
+            "Something went wrong sending your message. Please call or text us at (630) 895-7989 or email contact@ajcommercialgroup.com and we'll take care of you right away.",
+          isError: true,
+        });
+      }
+    } catch (err) {
+      console.error("Lead submission threw", err);
       setStatus({
-        message: "Thanks — we got it. A real broker will reach out within one business day.",
-        isError: false,
+        message:
+          "Something went wrong sending your message. Please call or text us at (630) 895-7989 or email contact@ajcommercialgroup.com and we'll take care of you right away.",
+        isError: true,
       });
-      form.reset();
-    } catch {
-      // Even on failure we show success so the visitor isn't blocked.
-      setStatus({
-        message: "Thanks — we got it. A real broker will reach out within one business day.",
-        isError: false,
-      });
-      form.reset();
     } finally {
       setSubmitting(false);
     }
@@ -127,6 +148,16 @@ export default function SmartForm({
   return (
     <form className={className} onSubmit={onSubmit} noValidate>
       {intro}
+      {/* Honeypot — hidden from humans, bots auto-fill it. Any value is dropped
+          server-side in /api/lead. Kept out of the tab order and screen readers. */}
+      <input
+        type="text"
+        name="website_url"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }}
+      />
       {children}
       {status && (
         <div

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createInquiry, getInquiries, logActivity } from "@/lib/data";
+import { requireApproved } from "@/lib/access";
 
 /**
  * POST /api/inquiries
@@ -48,11 +49,16 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(row, { status: 201 });
   } catch (err: unknown) {
-    return NextResponse.json({ error: (err as Error).message }, { status: 500 });
+    console.error("POST /api/inquiries failed:", err);
+    return NextResponse.json({ error: "Could not save inquiry" }, { status: 500 });
   }
 }
 
+// GET exposes lead PII (names, emails, phones) for the admin overview widget,
+// so it must be gated. POST stays public — the site's forms submit to it.
 export async function GET() {
+  const gate = await requireApproved();
+  if (gate.response) return gate.response;
   const rows = await getInquiries();
   return NextResponse.json(rows);
 }

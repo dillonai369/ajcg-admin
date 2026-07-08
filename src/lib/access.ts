@@ -80,6 +80,52 @@ export async function ensureAndGetUserAccess(): Promise<UserAccess | null> {
   return row as UserAccess;
 }
 
+/**
+ * API auth guard. Call at the top of any route that must be admin-only.
+ * Returns the caller's access row if they are signed in AND approved,
+ * otherwise returns a ready-to-send NextResponse (401/403) in `.response`.
+ *
+ * Usage:
+ *   const gate = await requireApproved();
+ *   if (gate.response) return gate.response;
+ *   // ...gate.user is the approved UserAccess
+ */
+export async function requireApproved(): Promise<
+  { user: UserAccess; response: null } | { user: null; response: Response }
+> {
+  let me: UserAccess | null = null;
+  try {
+    me = await ensureAndGetUserAccess();
+  } catch {
+    return {
+      user: null,
+      response: new Response(JSON.stringify({ error: "auth check failed" }), {
+        status: 500,
+        headers: { "content-type": "application/json" },
+      }),
+    };
+  }
+  if (!me) {
+    return {
+      user: null,
+      response: new Response(JSON.stringify({ error: "unauthorized" }), {
+        status: 401,
+        headers: { "content-type": "application/json" },
+      }),
+    };
+  }
+  if (me.status !== "approved") {
+    return {
+      user: null,
+      response: new Response(JSON.stringify({ error: "forbidden" }), {
+        status: 403,
+        headers: { "content-type": "application/json" },
+      }),
+    };
+  }
+  return { user: me, response: null };
+}
+
 /** Just read the row, never insert. Used by the API. */
 export async function getUserAccess(email: string): Promise<UserAccess | null> {
   const { data, error } = await supabaseAdmin()
@@ -107,6 +153,13 @@ export async function setUserStatus(
   status: AccessStatus,
   approvedByEmail: string,
 ): Promise<UserAccess | null> {
+  // Safety: never allow changing another super admin's status. Only the DB
+  // seed can mint a super admin, and they must not be demotable via the API.
+  const target = await getUserAccess(email);
+  if (target?.is_super_admin) {
+    throw new Error("cannot change another super admin's status");
+  }
+
   const patch: Partial<UserAccess> = {
     status,
     approved_at: status === "approved" ? new Date().toISOString() : null,

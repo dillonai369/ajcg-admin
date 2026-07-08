@@ -2,7 +2,12 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    remotePatterns: [{ protocol: "https", hostname: "**" }],
+    // Restrict the Next image optimizer to our own Supabase Storage host so it
+    // can't be abused to proxy/optimize images from arbitrary domains.
+    remotePatterns: [
+      { protocol: "https", hostname: "*.supabase.co" },
+      { protocol: "https", hostname: "*.supabase.in" },
+    ],
   },
 
   // Long-term cache for static assets in /public/assets — same as the old
@@ -20,6 +25,26 @@ const nextConfig = {
           { key: "X-Frame-Options", value: "SAMEORIGIN" },
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          // Force HTTPS for two years, including subdomains, and allow preload.
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=63072000; includeSubDomains; preload",
+          },
+          // Lock down high-risk browser features we don't use.
+          {
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=(), interest-cohort=()",
+          },
+          // Conservative CSP: block framing/clickjacking, plugin embeds, and
+          // <base> hijacking, and force any bare http subresource to https.
+          // We intentionally do NOT restrict script-src/style-src here so
+          // Next.js inline runtime + analytics keep working — this can be
+          // tightened later with a nonce-based policy if desired.
+          {
+            key: "Content-Security-Policy",
+            value:
+              "frame-ancestors 'self'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests",
+          },
         ],
       },
     ];

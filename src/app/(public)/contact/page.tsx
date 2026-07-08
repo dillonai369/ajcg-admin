@@ -77,6 +77,17 @@ export default function ContactPage() {
                   <textarea className="form-textarea" name="message"></textarea>
                 </div>
               </div>
+
+              <label className="form-consent">
+                <input type="checkbox" name="sms_consent" value="yes" />
+                <span>
+                  I agree to receive SMS text messages from AJ Commercial Group Inc. at the number provided. Consent
+                  is not a condition of any purchase. Msg &amp; data rates may apply. Msg frequency varies. Reply HELP
+                  for help, STOP to cancel. See our{" "}
+                  <a href="/privacy" style={{ textDecoration: "underline" }}>Privacy Policy</a>.
+                </span>
+              </label>
+
               <button type="submit" className="btn btn-primary form-submit btn-arrow">
                 Send Message
               </button>

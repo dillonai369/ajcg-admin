@@ -71,10 +71,12 @@ export default function SellingPage() {
             </div>
 
             <label className="form-consent">
-              <input type="checkbox" name="sms_consent" value="yes" required />
+              <input type="checkbox" name="sms_consent" value="yes" />
               <span>
-                I consent to receive SMS notifications, alerts and occasional marketing communication from AJ
-                Commercial Group Inc. Reply STOP to unsubscribe.
+                I agree to receive SMS text messages (notifications, alerts, and occasional marketing) from AJ
+                Commercial Group Inc. at the number provided. Consent is not a condition of any purchase. Msg &amp;
+                data rates may apply. Msg frequency varies. Reply HELP for help, STOP to cancel. See our{" "}
+                <a href="/privacy" style={{ textDecoration: "underline" }}>Privacy Policy</a>.
               </span>
             </label>
 
