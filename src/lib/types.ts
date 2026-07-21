@@ -107,6 +107,7 @@ export type Post = {
   meta_title?: string;
   meta_description?: string;
   date?: string;
+  published_at?: string; // schema column; some rows use this instead of `date`
   views?: number | string;
 };
 
