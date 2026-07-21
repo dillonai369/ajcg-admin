@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getProperty, getProperties, getBrokers } from "@/lib/data";
 import type { Metadata } from "next";
 import type { Broker } from "@/lib/types";
+import { isPubliclyVisibleProperty } from "@/lib/visibility";
 
 export const dynamic = "force-dynamic";
 
@@ -13,7 +14,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const property = await getProperty(slug);
-  if (!property) return { title: "Listing — AJ Commercial Group" };
+  // Treat non-public (e.g. draft/off-market) listings as absent so their
+  // title/description never leak into <head>.
+  if (!property || !isPubliclyVisibleProperty(property)) {
+    return { title: "Listing — AJ Commercial Group", robots: { index: false, follow: false } };
+  }
   return {
     title: property.meta_title || `${property.name} — AJ Commercial Group`,
     description: property.meta_description || property.description || `${property.name} — ${property.units}-Unit ${property.type}`,
@@ -45,7 +50,11 @@ function brokerCardPhoto(b: Broker) {
 export default async function PropertyPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const property = await getProperty(slug);
-  if (!property) notFound();
+  // 404 anything not publicly visible. Public detail pages read via the Supabase
+  // service-role key (RLS bypassed), so without this guard a `draft`/off-market
+  // listing — with price, NOI, cap rate — would be fully viewable to anyone who
+  // guesses the address-derived slug. Mirrors the DB's public-read RLS policy.
+  if (!property || !isPubliclyVisibleProperty(property)) notFound();
 
   const hero = normalizeImg(property.hero_image || property.images?.[0]);
   const galleryImages = (property.images || []).filter((url) => url && url !== property.hero_image);

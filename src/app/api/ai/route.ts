@@ -91,7 +91,9 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ output });
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : "Claude request failed";
-    return NextResponse.json({ error: message }, { status: 502 });
+    // Log the real upstream error server-side; return a generic message so
+    // Anthropic API internals never reach the browser.
+    console.error("POST /api/ai — Claude request failed:", err);
+    return NextResponse.json({ error: "AI request failed. Please try again." }, { status: 502 });
   }
 }

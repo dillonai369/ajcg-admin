@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getBroker, getBrokers, getProperties } from "@/lib/data";
 import type { Metadata } from "next";
+import { isPubliclyVisibleBroker } from "@/lib/visibility";
 
 export const dynamic = "force-dynamic";
 
@@ -12,7 +13,9 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const broker = await getBroker(slug);
-  if (!broker) return { title: "Broker — AJ Commercial Group" };
+  if (!broker || !isPubliclyVisibleBroker(broker)) {
+    return { title: "Broker — AJ Commercial Group", robots: { index: false, follow: false } };
+  }
   return {
     title: `${broker.name} — AJ Commercial Group`,
     description: broker.meta_description || broker.bio?.slice(0, 160) || `${broker.name} — ${broker.title}`,
@@ -45,7 +48,8 @@ function telHref(phone?: string) {
 export default async function BrokerPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const [broker, allProperties] = await Promise.all([getBroker(slug), getProperties()]);
-  if (!broker) notFound();
+  // 404 hidden brokers (show_on_team_page = false) — service-role reads bypass RLS.
+  if (!broker || !isPubliclyVisibleBroker(broker)) notFound();
 
   const heroPhoto = normalizeImg(broker.photo_url);
   const bioParagraphs = (broker.bio || "").split(/\n\s*\n/).map((s) => s.trim()).filter(Boolean);

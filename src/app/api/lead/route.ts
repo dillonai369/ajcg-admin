@@ -19,9 +19,10 @@
  */
 import { NextResponse } from "next/server";
 
-const GHL_WEBHOOK_URL =
-  process.env.GHL_WEBHOOK_URL ||
-  "https://services.leadconnectorhq.com/hooks/5VC5Crt63oAfFwA1RTHp/webhook-trigger/938c131b-d8f5-4da2-8a42-5f5fd4f6d060";
+// Read the webhook from the environment only — no hardcoded fallback. The URL
+// is set as GHL_WEBHOOK_URL in both Vercel projects (ajcg-admin + ajcg-app).
+// Keeping a live secret in source is what we're removing here.
+const GHL_WEBHOOK_URL = process.env.GHL_WEBHOOK_URL;
 
 const MIN_FORM_FILL_MS = 2000;
 
@@ -60,6 +61,14 @@ export async function POST(req: Request) {
     server_ip: clientIp,
     user_agent: userAgent,
   };
+
+  // Fail closed if the webhook isn't configured, rather than silently dropping
+  // the lead. The SmartForm still records the inquiry via /api/inquiries, and
+  // surfaces the phone/email fallback on this non-ok response.
+  if (!GHL_WEBHOOK_URL) {
+    console.error("GHL_WEBHOOK_URL is not set — cannot relay lead to GoHighLevel");
+    return NextResponse.json({ ok: false, error: "relay_unconfigured" }, { status: 500 });
+  }
 
   try {
     const ghlResponse = await fetch(GHL_WEBHOOK_URL, {

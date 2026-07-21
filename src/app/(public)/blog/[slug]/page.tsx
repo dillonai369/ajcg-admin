@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPost, getPosts } from "@/lib/data";
 import type { Metadata } from "next";
+import { isPubliclyVisiblePost } from "@/lib/visibility";
 
 export const dynamic = "force-dynamic";
 
@@ -12,7 +13,9 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const post = await getPost(slug);
-  if (!post) return { title: "Article — AJ Commercial Group" };
+  if (!post || !isPubliclyVisiblePost(post)) {
+    return { title: "Article — AJ Commercial Group", robots: { index: false, follow: false } };
+  }
   return {
     title: post.meta_title || `${post.title} — AJ Commercial Group`,
     description: post.meta_description || post.excerpt,
@@ -33,7 +36,8 @@ function normalizeImg(url?: string) {
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const post = await getPost(slug);
-  if (!post) notFound();
+  // 404 unpublished/scheduled posts — service-role reads bypass RLS.
+  if (!post || !isPubliclyVisiblePost(post)) notFound();
 
   const hero = normalizeImg(post.hero_image);
 

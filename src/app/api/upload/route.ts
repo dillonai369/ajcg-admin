@@ -69,7 +69,10 @@ export async function POST(req: Request) {
     contentType: sniffed,
     upsert: false,
   });
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) {
+    console.error("POST /api/upload — storage upload failed:", error);
+    return NextResponse.json({ error: "Upload failed. Please try again." }, { status: 500 });
+  }
 
   const { data: pub } = supabaseAdmin().storage.from(bucket).getPublicUrl(key);
   return NextResponse.json({ url: pub.publicUrl, key, bucket });
