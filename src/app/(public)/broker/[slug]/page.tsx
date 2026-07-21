@@ -16,6 +16,7 @@ export async function generateMetadata({
   return {
     title: `${broker.name} — AJ Commercial Group`,
     description: broker.meta_description || broker.bio?.slice(0, 160) || `${broker.name} — ${broker.title}`,
+    alternates: { canonical: `/broker/${slug}` },
   };
 }
 

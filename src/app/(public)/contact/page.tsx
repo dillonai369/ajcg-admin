@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "Contact — AJ Commercial Group",
   description:
     "Talk directly with a real broker on the AJ Commercial Group team. We respond within one business day — usually faster.",
+  alternates: { canonical: "/contact" },
 };
 
 export default function ContactPage() {

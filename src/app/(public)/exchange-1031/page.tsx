@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "1031 Exchange — AJ Commercial Group",
   description:
     "Defer capital gains, preserve equity, and build wealth with a 1031 Exchange. We help map the sequence and connect you with off-market replacement properties.",
+  alternates: { canonical: "/exchange-1031" },
 };
 
 export default function Exchange1031Page() {

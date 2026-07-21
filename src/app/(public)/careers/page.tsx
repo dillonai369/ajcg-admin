@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "Careers — AJ Commercial Group",
   description:
     "Join a multifamily brokerage team that thinks like owners and builds real careers — not just commissions.",
+  alternates: { canonical: "/careers" },
 };
 
 export default function CareersPage() {

@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "Insights — AJ Commercial Group",
   description:
     "Strategic notes on disposition, lending, 1031 exchanges, market trends, and tax planning — written for multifamily owners.",
+  alternates: { canonical: "/blog" },
 };
 
 function normalizeImg(url?: string) {

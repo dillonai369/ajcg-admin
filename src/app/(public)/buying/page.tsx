@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "Buying Multifamily — AJ Commercial Group",
   description:
     "Get matched with off-market and pre-launch multifamily acquisitions across Chicagoland and the Midwest. Tell us what you're hunting for.",
+  alternates: { canonical: "/buying" },
 };
 
 export default function BuyingPage() {

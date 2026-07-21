@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: "Our Team — AJ Commercial Group",
   description:
     "Meet the brokers and transaction coordinators behind AJ Commercial Group — Chicago and Midwest multifamily specialists.",
+  alternates: { canonical: "/our-team" },
 };
 
 function teamPhotoStyle(broker: Broker) {

@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "Free Valuation — AJ Commercial Group",
   description:
     "Get a no-obligation multifamily valuation in 48 hours using real comps, current cap rates, and active buyer demand.",
+  alternates: { canonical: "/selling" },
 };
 
 export default function SellingPage() {

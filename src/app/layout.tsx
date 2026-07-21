@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 
+// metadataBase lets every page declare a relative canonical (alternates.canonical)
+// and have Next resolve it to the full https://www.ajcommercialgroup.com/... URL.
+// Without it, pages ship no canonical at all, which left Google guessing which
+// URL was authoritative after the GHL → static → Next.js migrations.
 export const metadata: Metadata = {
-  title: "AJ Commercial Group",
+  metadataBase: new URL("https://www.ajcommercialgroup.com"),
+  title: "AJ Commercial Group — Chicagoland Multifamily Advisors",
   description:
     "Chicago multifamily real estate brokers specializing in apartment sales, 1031 exchanges, and investment property advisory across Cook, DuPage, and Will County.",
 };

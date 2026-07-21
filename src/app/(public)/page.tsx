@@ -1,15 +1,21 @@
 import Link from "next/link";
 import HasHeroFlag from "@/components/public/HasHeroFlag";
 import HomeScripts from "@/components/public/HomeScripts";
+import BusinessSchema from "@/components/public/BusinessSchema";
 import { getProperties, getPosts } from "@/lib/data";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
 
+// NOTE: the title deliberately leads with the brand name. It previously read
+// "Home — AJ Commercial Group", which is why Google was ranking inner pages
+// (e.g. /buying) above the homepage for brand searches — "Home" carries no
+// relevance signal for someone searching "AJ Commercial Group".
 export const metadata: Metadata = {
-  title: "Home — AJ Commercial Group",
+  title: "AJ Commercial Group — Chicagoland Multifamily Advisors",
   description:
-    "Chicago multifamily real estate brokers specializing in apartment sales, 1031 exchanges, and investment property advisory across Cook, DuPage, and Will County. Talk to a real broker.",
+    "AJ Commercial Group is a Chicagoland multifamily brokerage specializing in apartment building sales, valuations, and 1031 exchanges across Chicago, the suburbs, and the Midwest. Talk to a real broker.",
+  alternates: { canonical: "/" },
 };
 
 /**
@@ -37,6 +43,7 @@ export default async function HomePage() {
 
   return (
     <>
+      <BusinessSchema />
       <HasHeroFlag />
 
       <section className="hero hero-clean">

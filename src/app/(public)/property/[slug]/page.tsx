@@ -17,6 +17,7 @@ export async function generateMetadata({
   return {
     title: property.meta_title || `${property.name} — AJ Commercial Group`,
     description: property.meta_description || property.description || `${property.name} — ${property.units}-Unit ${property.type}`,
+    alternates: { canonical: `/property/${slug}` },
   };
 }
 

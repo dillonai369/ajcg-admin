@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   title: "Recently Sold — AJ Commercial Group",
   description:
     "A representative selection of multifamily transactions closed by AJ Commercial Group across Chicagoland and the broader Midwest.",
+  alternates: { canonical: "/recently-sold" },
 };
 
 function normalizeImg(url?: string) {
