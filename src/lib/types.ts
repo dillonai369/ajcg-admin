@@ -102,6 +102,7 @@ export type Post = {
   hero_image?: string;
   hero_alt?: string;
   author?: string;
+  author_slug?: string; // schema column; may hold a broker name or slug
   blocks?: PostBlock[];
   tags?: string[];
   meta_title?: string;

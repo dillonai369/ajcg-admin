@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getPost, getPosts, getBrokers } from "@/lib/data";
+import { getPost, getPosts } from "@/lib/data";
 import type { Metadata } from "next";
 import { isPubliclyVisiblePost } from "@/lib/visibility";
 import BlockRenderer from "@/components/public/BlockRenderer";
@@ -45,15 +45,11 @@ function normalizeImg(url?: string) {
  */
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const [post, brokers] = await Promise.all([getPost(slug), getBrokers()]);
+  const post = await getPost(slug);
   // 404 unpublished/scheduled posts — service-role reads bypass RLS.
   if (!post || !isPubliclyVisiblePost(post)) notFound();
 
   const hero = normalizeImg(post.hero_image);
-  const authorName = post.author?.trim();
-  const authorBroker = authorName
-    ? brokers.find((b) => (b.name || "").toLowerCase() === authorName.toLowerCase())
-    : undefined;
   const published = post.published_at || post.date;
   const publishedLabel = fmtDate(published);
   const hasBlocks = Array.isArray(post.blocks) && post.blocks.length > 0;
@@ -71,9 +67,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         image: hero ? (hero.startsWith("http") ? hero : `${BASE}${hero}`) : undefined,
         datePublished: published || undefined,
         dateModified: published || undefined,
-        author: authorName
-          ? { "@type": "Person", name: authorName, url: authorBroker ? `${BASE}/broker/${authorBroker.slug}` : undefined }
-          : { "@type": "Organization", name: "AJ Commercial Group" },
+        // Posts are published under the company, not a named person.
+        author: { "@type": "Organization", name: "AJ Commercial Group", "@id": `${BASE}/#organization` },
         publisher: { "@id": `${BASE}/#organization` },
         mainEntityOfPage: `${BASE}/blog/${slug}`,
         articleSection: post.category,
@@ -102,23 +97,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           </div>
           <h1>{post.title}</h1>
           {post.excerpt ? <p>{post.excerpt}</p> : null}
-          {(authorName || publishedLabel) && (
-            <p style={{ marginTop: 14, fontSize: 14, opacity: 0.75 }}>
-              {authorName ? (
-                <>
-                  By{" "}
-                  {authorBroker ? (
-                    <Link href={`/broker/${authorBroker.slug}`} style={{ color: "var(--gold)" }}>
-                      {authorName}
-                    </Link>
-                  ) : (
-                    <span>{authorName}</span>
-                  )}
-                </>
-              ) : null}
-              {authorName && publishedLabel ? " · " : null}
-              {publishedLabel ? <span>Updated {publishedLabel}</span> : null}
-            </p>
+          {publishedLabel && (
+            <p style={{ marginTop: 14, fontSize: 14, opacity: 0.75 }}>Updated {publishedLabel}</p>
           )}
         </div>
       </section>

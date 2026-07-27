@@ -12,7 +12,11 @@
  * is deployed. Hero images are left blank intentionally — add them in the admin
  * (Blog → post → hero image) so they're stored in Supabase, not an external CDN.
  */
-import "dotenv/config";
+import { config } from "dotenv";
+// Standalone scripts don't auto-load .env.local the way Next.js does, so load
+// it explicitly (falling back to .env). This is where the Supabase keys live.
+config({ path: ".env.local" });
+config();
 import { createClient } from "@supabase/supabase-js";
 import type { PostBlock } from "../src/lib/types";
 
