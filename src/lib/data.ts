@@ -328,9 +328,29 @@ export async function getPost(slug: string): Promise<Post | null> {
   return list.find((p) => p.slug === slug) ?? null;
 }
 
+/**
+ * The `posts` table columns are `author_slug` and `published_at`, but the admin
+ * editor and Post type use `author` and `date`. Without this remap, saving a
+ * post from the admin throws "column author does not exist" and the edit is
+ * lost. Map the app's field names onto the real DB columns on every write.
+ */
+function mapPostWriteColumns(obj: Record<string, unknown>): Record<string, unknown> {
+  const out = { ...obj };
+  if ("author" in out) {
+    if (out.author != null && out.author_slug == null) out.author_slug = out.author;
+    delete out.author;
+  }
+  if ("date" in out) {
+    if (out.date != null && out.published_at == null) out.published_at = out.date;
+    delete out.date;
+  }
+  return out;
+}
+
 export async function savePost(slug: string, data: Partial<Post>): Promise<Post | null> {
   if (isSupabaseConfigured) {
-    const { slug: _ignore, id: _id, created_at: _ca, updated_at: _ua, ...patch } = data as Record<string, unknown>;
+    const { slug: _ignore, id: _id, created_at: _ca, updated_at: _ua, ...rawPatch } = data as Record<string, unknown>;
+    const patch = mapPostWriteColumns(rawPatch);
     const { data: row, error } = await supabaseAdmin()
       .from("posts")
       .update(patch)
@@ -352,13 +372,13 @@ export async function savePost(slug: string, data: Partial<Post>): Promise<Post 
 
 export async function createPost(data: Partial<Post> & { slug: string }): Promise<Post> {
   if (isSupabaseConfigured) {
-    const insert = {
+    const insert = mapPostWriteColumns({
       ...data,
       slug: data.slug,
       title: data.title ?? "Untitled Post",
       category: data.category ?? "Market Updates",
       status: data.status ?? "draft",
-    };
+    });
     const { data: row, error } = await supabaseAdmin().from("posts").insert(insert).select("*").single();
     if (error) throw error;
     return row as Post;

@@ -87,11 +87,28 @@ export default function SmartForm({
       ...captureUtm(),
     };
 
+    // Capture EVERY extra field the form collected into the inquiry message, so
+    // rich forms (e.g. the Full Property Valuation: unit mix, expenses, roof/
+    // window/mechanical age, condition, gross income) are stored durably in
+    // Supabase — not only relayed to GHL. Previously these fields had no durable
+    // destination and were effectively dropped from the admin's record.
+    const CORE_KEYS = new Set([
+      "first_name", "last_name", "full_name", "name", "email", "phone",
+      "notes", "message", "additional_info", "property_slug", "broker_slug",
+      "sms_consent", "website_url", "__form_loaded_at", "form_type", "source",
+    ]);
+    const humanize = (k: string) => k.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+    const detailLines = Object.entries(data)
+      .filter(([k, v]) => !CORE_KEYS.has(k) && v && String(v).trim())
+      .map(([k, v]) => `${humanize(k)}: ${Array.isArray(v) ? v.join(", ") : v}`);
+    const baseMsg = String(data.additional_info || data.notes || data.message || "").trim();
+    const composedMessage = [baseMsg, detailLines.join("\n")].filter(Boolean).join("\n\n");
+
     const inquiryPayload = {
       name: payload.name || `${first_name} ${last_name}`.trim(),
       email: data.email || "",
       phone: data.phone || "",
-      message: data.notes || data.message || "",
+      message: composedMessage,
       source: formType,
       property_slug: typeof data.property_slug === "string" ? data.property_slug : undefined,
       broker_slug: typeof data.broker_slug === "string" ? data.broker_slug : undefined,
