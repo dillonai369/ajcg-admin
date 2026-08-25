@@ -177,7 +177,7 @@ export default async function HomePage() {
           <div className="founders-stack">
             <div
               className="founders-stack-photo tall"
-              style={{ backgroundImage: "url('/assets/team/IMG_4605.jpg')", backgroundPosition: "center 35%" }}
+              style={{ backgroundImage: "url('/assets/team/founders-joey-anthony.jpg')", backgroundPosition: "center 40%" }}
             >
               <div className="founders-stack-tag">Joey &amp; Anthony · Chicago</div>
             </div>
