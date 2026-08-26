@@ -17,7 +17,15 @@ export const metadata: Metadata = {
   // Google Search Console verification. This tag existed on the old static site
   // but was never ported to Next.js — losing it can invalidate ownership
   // verification, which blocks sitemap submission and re-index requests.
-  verification: { google: "Uai2B5wW-Tn0bz0rZKDobw9Mw0n-VcYaFcqSyuP4VeA" },
+  // Two Search Console verification tokens: the original, plus Dillon's
+  // dmkmarketing33 account (added 2026-08-25) so he can manage indexing,
+  // submit the sitemap, and request re-crawls. Both render as meta tags.
+  verification: {
+    google: [
+      "Uai2B5wW-Tn0bz0rZKDobw9Mw0n-VcYaFcqSyuP4VeA",
+      "zhHpH7_n3IcfU7-z31bzbu5YPl9HbPpzsuE2tdEtwFo",
+    ],
+  },
 
   // Open Graph / Twitter cards were also lost in the migration, so shared links
   // (LinkedIn, Facebook, iMessage) rendered as bare URLs with no image or title.
