@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 import { ensureAndGetUserAccess } from "@/lib/access";
+import { readImageSize, MIN_WIDTH_BY_BUCKET } from "@/lib/image-meta";
 
 /** Return the real image MIME type from magic bytes, or null if not an image. */
 function sniffImageType(buf: Buffer): string | null {
@@ -59,6 +60,24 @@ export async function POST(req: Request) {
   const sniffed = sniffImageType(buf);
   if (!sniffed) {
     return NextResponse.json({ error: "only JPEG, PNG, GIF, or WebP images are allowed" }, { status: 415 });
+  }
+
+  // Reject images too small to render well where they'll be used. The live
+  // site has heroes stretched from 540px sources and one 2x1 blank upload —
+  // all of which passed the old size + magic-byte checks. If dimensions can't
+  // be read we allow the upload rather than block a valid but unusual file.
+  const size = readImageSize(buf);
+  const minWidth = MIN_WIDTH_BY_BUCKET[bucket];
+  if (size && minWidth && size.width < minWidth) {
+    return NextResponse.json(
+      {
+        error:
+          `This image is only ${size.width}x${size.height} pixels, which will look blurry. ` +
+          `Please upload one at least ${minWidth} pixels wide — a photo straight from a phone ` +
+          `or camera works. Screenshots are usually too small.`,
+      },
+      { status: 422 },
+    );
   }
 
   // Generate a unique key: <timestamp>-<sanitized-name>

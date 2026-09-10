@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createInquiry, getInquiries, logActivity } from "@/lib/data";
 import { requireApproved } from "@/lib/access";
+import { screenSubmission, clientIpFrom } from "@/lib/spam";
 
 /**
  * POST /api/inquiries
@@ -24,6 +25,28 @@ export async function POST(req: NextRequest) {
   const name = String(body.name ?? "").trim();
   if (!name) {
     return NextResponse.json({ error: "name is required" }, { status: 400 });
+  }
+
+  // Screen before writing. This endpoint is public by necessity (the site's
+  // forms post to it), which also means anything on the internet can POST to
+  // it directly — that is where the junk leads in the admin inbox came from.
+  // Bots get a 201-shaped success so they stop retrying and don't learn which
+  // check caught them; nothing is written.
+  const verdict = screenSubmission({
+    honeypot: body.website_url,
+    formLoadedAt: body.__form_loaded_at,
+    name,
+    email: typeof body.email === "string" ? body.email : "",
+    phone: typeof body.phone === "string" ? body.phone : "",
+    message: typeof body.message === "string" ? body.message : "",
+    ip: clientIpFrom(req.headers),
+  });
+  if (verdict.spam) {
+    console.log("[inquiry drop]", verdict.reason, {
+      ip: clientIpFrom(req.headers),
+      source: body.source,
+    });
+    return NextResponse.json({ ok: true, id: null }, { status: 201 });
   }
 
   try {

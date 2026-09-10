@@ -18,13 +18,12 @@
  * fallback to the known URL keeps the relay working if the env var is missing.
  */
 import { NextResponse } from "next/server";
+import { screenSubmission, clientIpFrom } from "@/lib/spam";
 
 // Read the webhook from the environment only — no hardcoded fallback. The URL
 // is set as GHL_WEBHOOK_URL in both Vercel projects (ajcg-admin + ajcg-app).
 // Keeping a live secret in source is what we're removing here.
 const GHL_WEBHOOK_URL = process.env.GHL_WEBHOOK_URL;
-
-const MIN_FORM_FILL_MS = 2000;
 
 export async function POST(req: Request) {
   let body: Record<string, unknown>;
@@ -34,22 +33,25 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "invalid_json" }, { status: 400 });
   }
 
-  const clientIp = (req.headers.get("x-forwarded-for") || "").split(",")[0].trim() || null;
+  const clientIp = clientIpFrom(req.headers);
   const userAgent = req.headers.get("user-agent") || null;
 
-  // Bot check #1: honeypot
-  if (body.website_url && String(body.website_url).trim().length > 0) {
-    console.log("[bot drop] honeypot triggered", { ip: clientIp, form: body.form_type });
+  // Screening now lives in src/lib/spam.ts so this relay and /api/inquiries
+  // apply the exact same rules — previously only this route screened anything,
+  // so junk that skipped the relay still reached the admin inbox.
+  // Bots get a 200 so they think it worked and stop retrying.
+  const verdict = screenSubmission({
+    honeypot: body.website_url,
+    formLoadedAt: body.__form_loaded_at,
+    name: typeof body.name === "string" ? body.name : "",
+    email: typeof body.email === "string" ? body.email : "",
+    phone: typeof body.phone === "string" ? body.phone : "",
+    message: typeof body.message === "string" ? body.message : "",
+    ip: clientIp,
+  });
+  if (verdict.spam) {
+    console.log("[bot drop]", verdict.reason, { ip: clientIp, form: body.form_type });
     return NextResponse.json({ ok: true });
-  }
-
-  // Bot check #2: minimum time on page
-  const loadedAt = parseInt(String(body.__form_loaded_at ?? ""), 10);
-  if (Number.isFinite(loadedAt) && loadedAt > 0) {
-    if (Date.now() - loadedAt < MIN_FORM_FILL_MS) {
-      console.log("[bot drop] time check failed", { ip: clientIp, form: body.form_type });
-      return NextResponse.json({ ok: true });
-    }
   }
 
   // Strip bot-protection fields before relaying

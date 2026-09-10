@@ -112,6 +112,11 @@ export default function SmartForm({
       source: formType,
       property_slug: typeof data.property_slug === "string" ? data.property_slug : undefined,
       broker_slug: typeof data.broker_slug === "string" ? data.broker_slug : undefined,
+      // Bot-protection signals. These used to go only to /api/lead, which left
+      // /api/inquiries — the endpoint that writes to the admin inbox — with no
+      // way to tell a person from a script. Stripped server-side before saving.
+      website_url: data.website_url || "",
+      __form_loaded_at: loadedAtRef.current,
     };
 
     // Fire both endpoints in parallel. The lead is "captured" if EITHER the GHL
