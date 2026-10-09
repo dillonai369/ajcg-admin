@@ -337,19 +337,29 @@ export default async function HomePage() {
             <h2>A team that lives for this market.</h2>
             <p>We&apos;re not a remote brokerage clicking through deals from somewhere else. We work in Chicago, we close in Chicago, and we build relationships you can call about ten years from now.</p>
           </div>
+          {/* Photos swapped 2026-10-09 per Mary (AJCG). The grid is sized so each
+              photo shows at its own shape — the portrait on the left is 2:3, the
+              two on the right are 3:2 — with one even 24px gap throughout, so
+              nothing is cropped into a square or has a head cut off. */}
           <div className="culture-grid">
             <div
               className="culture-grid-item tall"
-              style={{ backgroundImage: "url('/assets/team/IMG_4604.jpg')", backgroundPosition: "center 30%" }}
+              role="img"
+              aria-label="Three AJ Commercial Group brokers in navy suits on the stone steps along the Chicago River"
+              style={{ backgroundImage: "url('/assets/team/culture-founders-steps.jpg')", backgroundPosition: "center 20%" }}
             ></div>
             <div className="culture-grid-right">
               <div
                 className="culture-grid-item"
-                style={{ backgroundImage: "url('/assets/team/7616D97A-DE55-4DFC-BE98-E6C26467CAB2.PNG')", backgroundPosition: "center 35%" }}
+                role="img"
+                aria-label="The full AJ Commercial Group team in the lobby of their Downers Grove office"
+                style={{ backgroundImage: "url('/assets/team/culture-team-lobby.jpg')", backgroundPosition: "center 45%" }}
               ></div>
               <div
                 className="culture-grid-item"
-                style={{ backgroundImage: "url('/assets/team/125ED794-C9F7-487A-927F-321E0CA06D9F.PNG')", backgroundPosition: "center 40%" }}
+                role="img"
+                aria-label="Two brokers reviewing a deal together on a laptop"
+                style={{ backgroundImage: "url('/assets/team/culture-work-session.jpg')", backgroundPosition: "center" }}
               ></div>
             </div>
           </div>

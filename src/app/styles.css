@@ -1329,14 +1329,22 @@ body.menu-open { overflow: hidden; touch-action: none; }
 .culture-head { text-align: center; max-width: 700px; margin: 0 auto 60px; position: relative; z-index: 2; }
 .culture-head h2 { color: var(--white); margin-bottom: 16px; }
 .culture-head p { color: rgba(255,255,255,0.72); font-size: 17px; line-height: 1.65; }
-.culture-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 24px; position: relative; z-index: 2; }
-.culture-grid-item { border-radius: var(--radius); overflow: hidden; aspect-ratio: 16/10; background-size: cover; background-position: center; position: relative; }
-.culture-grid-item.tall { aspect-ratio: auto; min-height: 100%; }
-.culture-grid-item::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 60%, rgba(15,26,46,0.5) 100%); }
+/* Column ratio 1 : 1.1 is chosen so a 2:3 portrait on the left is exactly as
+   tall as two 3:2 landscapes stacked on the right (plus the gap) — every photo
+   renders at its native shape with no cropping, and all gaps are the same 24px.
+   Capped at 1240px so the collage doesn't balloon on ultra-wide screens. */
+.culture-grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: 24px; max-width: 1240px; margin: 0 auto; align-items: stretch; position: relative; z-index: 2; }
+.culture-grid-item { border-radius: var(--radius); overflow: hidden; aspect-ratio: 3/2; background-size: cover; background-position: center; position: relative; }
+.culture-grid-item.tall { aspect-ratio: 2/3; height: 100%; }
+.culture-grid-item::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 65%, rgba(15,26,46,0.45) 100%); }
 .culture-grid-right { display: grid; grid-template-rows: 1fr 1fr; gap: 24px; }
 @media (max-width: 880px) {
   .culture-grid { grid-template-columns: 1fr; }
+  .culture-grid-item.tall { aspect-ratio: 4/5; height: auto; }
   .culture-grid-right { grid-template-rows: auto; grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 560px) {
+  .culture-grid-right { grid-template-columns: 1fr; }
 }
 
 /* ---------- BROCHURE / CREATIVES ---------- */
