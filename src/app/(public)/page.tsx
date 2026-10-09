@@ -4,6 +4,7 @@ import HomeScripts from "@/components/public/HomeScripts";
 import BusinessSchema from "@/components/public/BusinessSchema";
 import { getProperties, getPosts } from "@/lib/data";
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -11,12 +12,12 @@ export const dynamic = "force-dynamic";
 // "Home — AJ Commercial Group", which is why Google was ranking inner pages
 // (e.g. /buying) above the homepage for brand searches — "Home" carries no
 // relevance signal for someone searching "AJ Commercial Group".
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "AJ Commercial Group — Chicagoland Multifamily Advisors",
   description:
     "AJ Commercial Group is a Chicagoland multifamily brokerage specializing in apartment building sales, valuations, and 1031 exchanges across Chicago, the suburbs, and the Midwest. Talk to a real broker.",
-  alternates: { canonical: "/" },
-};
+  path: "/",
+});
 
 /**
  * Homepage — pixel-port of /index.html.

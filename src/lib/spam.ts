@@ -38,7 +38,10 @@ function rateLimited(key: string): boolean {
   return recent.length > RATE_LIMIT_MAX;
 }
 
-const URL_RE = /\b(?:https?:\/\/|www\.)\S+/gi;
+// Two copies on purpose: a global regex used with .test() remembers lastIndex
+// between calls and silently skips matches on the next request.
+const URL_RE_ALL = /\b(?:https?:\/\/|www\.)\S+/gi;
+const URL_RE = /\b(?:https?:\/\/|www\.)\S+/i;
 const BBCODE_RE = /\[url[=\]]|\[\/url\]|<a\s+href=/i;
 
 /**
@@ -75,7 +78,9 @@ export type SpamVerdict = { spam: false } | { spam: true; reason: string };
 export type SpamCheckInput = {
   /** Honeypot field — hidden from humans, auto-filled by bots. */
   honeypot?: unknown;
-  /** Client timestamp (ms) captured when the form mounted. */
+  /** Milliseconds between the form mounting and submit, measured on the client. */
+  formElapsedMs?: unknown;
+  /** Legacy: absolute client timestamp (ms) when the form mounted. */
   formLoadedAt?: unknown;
   name?: string;
   email?: string;
@@ -85,8 +90,23 @@ export type SpamCheckInput = {
   ip?: string | null;
 };
 
+/**
+ * Time-on-page check. Prefers the client-measured elapsed time (immune to a
+ * wrong device clock); falls back to the legacy absolute timestamp, ignoring
+ * negative differences so a fast clock can never get a real person flagged.
+ * Absent signals never block — only an affirmative "too fast" does.
+ */
+function tooFast(formElapsedMs: unknown, formLoadedAt: unknown): boolean {
+  const elapsed = parseInt(String(formElapsedMs ?? ""), 10);
+  if (Number.isFinite(elapsed)) return elapsed >= 0 && elapsed < MIN_FORM_FILL_MS;
+  const loadedAt = parseInt(String(formLoadedAt ?? ""), 10);
+  if (!Number.isFinite(loadedAt) || loadedAt <= 0) return false;
+  const diff = Date.now() - loadedAt;
+  return diff >= 0 && diff < MIN_FORM_FILL_MS;
+}
+
 export function screenSubmission(input: SpamCheckInput): SpamVerdict {
-  const { honeypot, formLoadedAt, ip } = input;
+  const { honeypot, formElapsedMs, formLoadedAt, ip } = input;
   const name = (input.name ?? "").trim();
   const email = (input.email ?? "").trim();
   const phone = (input.phone ?? "").trim();
@@ -97,10 +117,8 @@ export function screenSubmission(input: SpamCheckInput): SpamVerdict {
     return { spam: true, reason: "honeypot" };
   }
 
-  // 2. Time on page. Only applied when the stamp is present and sane — an
-  //    absent stamp shouldn't block a legitimate submission.
-  const loadedAt = parseInt(String(formLoadedAt ?? ""), 10);
-  if (Number.isFinite(loadedAt) && loadedAt > 0 && Date.now() - loadedAt < MIN_FORM_FILL_MS) {
+  // 2. Time on page.
+  if (tooFast(formElapsedMs, formLoadedAt)) {
     return { spam: true, reason: "too_fast" };
   }
 
@@ -120,7 +138,7 @@ export function screenSubmission(input: SpamCheckInput): SpamVerdict {
   if (URL_RE.test(name) || BBCODE_RE.test(name)) {
     return { spam: true, reason: "url_in_name" };
   }
-  const urlCount = (message.match(URL_RE) ?? []).length;
+  const urlCount = (message.match(URL_RE_ALL) ?? []).length;
   if (urlCount >= 2 || BBCODE_RE.test(message)) {
     return { spam: true, reason: "links_in_message" };
   }
@@ -137,6 +155,25 @@ export function screenSubmission(input: SpamCheckInput): SpamVerdict {
     return { spam: true, reason: "rate_limited" };
   }
 
+  return { spam: false };
+}
+
+/**
+ * Lighter screen for auxiliary public endpoints (file uploads) that have no
+ * name/email/message to inspect: honeypot, time-on-page, and flood control.
+ */
+export function screenBasic(
+  input: Pick<SpamCheckInput, "honeypot" | "formElapsedMs" | "formLoadedAt" | "ip">,
+): SpamVerdict {
+  if (input.honeypot && String(input.honeypot).trim().length > 0) {
+    return { spam: true, reason: "honeypot" };
+  }
+  if (tooFast(input.formElapsedMs, input.formLoadedAt)) {
+    return { spam: true, reason: "too_fast" };
+  }
+  if (input.ip && rateLimited(`upload:${input.ip}`)) {
+    return { spam: true, reason: "rate_limited" };
+  }
   return { spam: false };
 }
 

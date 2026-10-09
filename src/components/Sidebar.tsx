@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { UserButton, useUser } from "@clerk/nextjs";
 import {
   LayoutDashboard,
+  Inbox,
   Building2,
   FileText,
   UsersRound,
@@ -15,6 +16,7 @@ import {
 
 const NAV = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard, match: (p: string) => p === "/admin" },
+  { href: "/admin/inquiries", label: "Inquiries", icon: Inbox, match: (p: string) => p.startsWith("/admin/inquiries") },
   { href: "/admin/listings", label: "Listings", icon: Building2, match: (p: string) => p.startsWith("/admin/listings") },
   { href: "/admin/blog", label: "Blog", icon: FileText, match: (p: string) => p.startsWith("/admin/blog") },
   { href: "/admin/brokers", label: "Brokers", icon: UsersRound, match: (p: string) => p.startsWith("/admin/brokers") },

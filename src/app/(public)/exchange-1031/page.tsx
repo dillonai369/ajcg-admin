@@ -1,12 +1,13 @@
 import SmartForm from "@/components/public/SmartForm";
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "1031 Exchange — AJ Commercial Group",
   description:
     "Defer capital gains, preserve equity, and build wealth with a 1031 Exchange. We help map the sequence and connect you with off-market replacement properties.",
-  alternates: { canonical: "/exchange-1031" },
-};
+  path: "/exchange-1031",
+});
 
 export default function Exchange1031Page() {
   return (

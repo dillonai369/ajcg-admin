@@ -2,17 +2,18 @@ import Link from "next/link";
 import { getProperties } from "@/lib/data";
 import type { Metadata } from "next";
 import type { Property } from "@/lib/types";
+import { pageMetadata } from "@/lib/seo";
 
 // Always pull fresh from Supabase so admin-added listings show up immediately.
 // (Static cache from build time was excluding new rows even after revalidation.)
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Recently Sold — AJ Commercial Group",
   description:
     "A representative selection of multifamily transactions closed by AJ Commercial Group across Chicagoland and the broader Midwest.",
-  alternates: { canonical: "/recently-sold" },
-};
+  path: "/recently-sold",
+});
 
 function normalizeImg(url?: string) {
   if (!url) return "";

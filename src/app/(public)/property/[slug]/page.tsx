@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getProperty, getProperties, getBrokers } from "@/lib/data";
+import { getProperty, getBrokers } from "@/lib/data";
 import type { Metadata } from "next";
 import type { Broker } from "@/lib/types";
 import { isPubliclyVisibleProperty } from "@/lib/visibility";
+import SmartForm from "@/components/public/SmartForm";
 
 export const dynamic = "force-dynamic";
 
@@ -19,12 +20,42 @@ export async function generateMetadata({
   if (!property || !isPubliclyVisibleProperty(property)) {
     return { title: "Listing — AJ Commercial Group", robots: { index: false, follow: false } };
   }
+  const title = property.meta_title || `${property.name} — AJ Commercial Group`;
+  // Search engines truncate past ~160 characters; the full description was
+  // going out untrimmed, so snippets cut off mid-sentence.
+  const description = clip(
+    property.meta_description || property.description || `${property.name} — ${property.units}-Unit ${property.type}`,
+    160,
+  );
+  const hero = normalizeImg(property.hero_image || property.images?.[0]) || "/assets/og-image.jpg";
   return {
-    title: property.meta_title || `${property.name} — AJ Commercial Group`,
-    description: property.meta_description || property.description || `${property.name} — ${property.units}-Unit ${property.type}`,
+    title,
+    description,
     alternates: { canonical: `/property/${slug}` },
+    // Per-page share card: a listing link on LinkedIn/iMessage now shows the
+    // building, not the homepage team photo. A page-level openGraph replaces
+    // the root one entirely, so site name/locale are restated here.
+    openGraph: {
+      type: "article",
+      siteName: "AJ Commercial Group",
+      locale: "en_US",
+      title,
+      description,
+      url: `/property/${slug}`,
+      images: [{ url: hero, alt: property.name }],
+    },
+    twitter: { card: "summary_large_image", title, description, images: [hero] },
   };
 }
+
+function clip(s: string, max: number): string {
+  const t = s.replace(/\s+/g, " ").trim();
+  if (t.length <= max) return t;
+  const cut = t.slice(0, max - 1);
+  return `${cut.slice(0, Math.max(cut.lastIndexOf(" "), 80))}…`;
+}
+
+const ACTIVE_STATUSES = new Set(["for sale", "under contract", "coming soon"]);
 
 function normalizeImg(url?: string) {
   if (!url) return "";
@@ -212,6 +243,81 @@ export default async function PropertyPage({ params }: { params: Promise<{ slug:
           )}
         </div>
       </section>
+
+      {ACTIVE_STATUSES.has((property.status || "").toLowerCase()) && (
+        <section className="form-section">
+          <div className="wrap">
+            <SmartForm
+              className="form-card"
+              formType="property"
+              intro={
+                <>
+                  <h2>Ask about {property.name}</h2>
+                  <p className="form-lede">
+                    Request the offering memorandum, financials, or a showing. Goes straight to the listing broker.
+                  </p>
+                </>
+              }
+            >
+              {/* Ties the lead to this listing in the admin — the only way a
+                  broker can tell which building someone asked about. */}
+              <input type="hidden" name="property_slug" value={property.slug} />
+              <input type="hidden" name="property_name" value={property.name} />
+              {team[0] ? <input type="hidden" name="broker_slug" value={team[0].slug} /> : null}
+              <div className="form-grid">
+                <div>
+                  <label className="form-label">First Name</label>
+                  <input className="form-input" type="text" name="first_name" required />
+                </div>
+                <div>
+                  <label className="form-label">Last Name</label>
+                  <input className="form-input" type="text" name="last_name" required />
+                </div>
+              </div>
+              <div className="form-grid">
+                <div>
+                  <label className="form-label">Email</label>
+                  <input className="form-input" type="email" name="email" required />
+                </div>
+                <div>
+                  <label className="form-label">Phone</label>
+                  <input className="form-input" type="tel" name="phone" required />
+                </div>
+              </div>
+              <div className="form-grid full">
+                <div>
+                  <label className="form-label">What would you like?</label>
+                  <select className="form-select" name="inquiry_type" required defaultValue="">
+                    <option value="" disabled>Select one…</option>
+                    <option>Offering memorandum &amp; financials</option>
+                    <option>Schedule a showing</option>
+                    <option>Make an offer</option>
+                    <option>General question</option>
+                  </select>
+                </div>
+              </div>
+              <div className="form-grid full">
+                <div>
+                  <label className="form-label">Anything else?</label>
+                  <textarea className="form-textarea" name="message"></textarea>
+                </div>
+              </div>
+              <label className="form-consent">
+                <input type="checkbox" name="sms_consent" value="yes" />
+                <span>
+                  I agree to receive SMS text messages from AJ Commercial Group Inc. at the number provided. Consent is
+                  not a condition of any purchase. Msg &amp; data rates may apply. Msg frequency varies. Reply HELP for
+                  help, STOP to cancel. See our{" "}
+                  <a href="/privacy" style={{ textDecoration: "underline" }}>Privacy Policy</a>.
+                </span>
+              </label>
+              <button type="submit" className="btn btn-primary form-submit btn-arrow">
+                Send Request
+              </button>
+            </SmartForm>
+          </div>
+        </section>
+      )}
 
       <section className="cta-block">
         <div className="wrap">

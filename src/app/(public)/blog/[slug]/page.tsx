@@ -26,10 +26,28 @@ export async function generateMetadata({
   if (!post || !isPubliclyVisiblePost(post)) {
     return { title: "Article — AJ Commercial Group", robots: { index: false, follow: false } };
   }
+  const title = post.meta_title || `${post.title} — AJ Commercial Group`;
+  const description = post.meta_description || post.excerpt;
+  const hero = normalizeImg(post.hero_image) || "/assets/og-image.jpg";
+  const published = post.published_at || post.date;
   return {
-    title: post.meta_title || `${post.title} — AJ Commercial Group`,
-    description: post.meta_description || post.excerpt,
+    title,
+    description,
     alternates: { canonical: `/blog/${slug}` },
+    // Per-article share card — previously every article link showed the
+    // homepage title and team photo when shared. A page-level openGraph
+    // replaces the root one, so site name/locale repeat here.
+    openGraph: {
+      type: "article",
+      siteName: "AJ Commercial Group",
+      locale: "en_US",
+      title,
+      description,
+      url: `/blog/${slug}`,
+      publishedTime: published || undefined,
+      images: [{ url: hero, alt: post.hero_alt || post.title }],
+    },
+    twitter: { card: "summary_large_image", title, description, images: [hero] },
   };
 }
 

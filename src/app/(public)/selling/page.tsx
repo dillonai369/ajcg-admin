@@ -1,12 +1,13 @@
 import SmartForm from "@/components/public/SmartForm";
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Free Valuation — AJ Commercial Group",
   description:
     "Get a no-obligation multifamily valuation in 48 hours using real comps, current cap rates, and active buyer demand.",
-  alternates: { canonical: "/selling" },
-};
+  path: "/selling",
+});
 
 export default function SellingPage() {
   return (

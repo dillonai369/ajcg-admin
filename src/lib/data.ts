@@ -418,28 +418,104 @@ export async function deletePost(slug: string): Promise<boolean> {
 // =================================================================
 // INQUIRIES (form submissions from the public site)
 // =================================================================
+export { INQUIRY_STATUSES, type InquiryStatus } from "./lead-forms";
+
 export type Inquiry = {
   id?: string;
   name: string;
   email?: string;
   phone?: string;
+  /** Plain-text summary (typed note first, then every detail as "Label: value"). */
   message?: string;
+  /** Legacy: the form type. Kept because older rows only have this. */
   source?: string;
+  /** contact | buying | selling | quick_valuation | exchange_1031 | careers | property */
+  form_type?: string;
+  /** Every non-core form field, keyed by its input name. */
+  details?: Record<string, unknown>;
+  page_url?: string;
+  referrer?: string;
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+  utm_content?: string;
+  sms_consent?: boolean;
   property_slug?: string;
   broker_slug?: string;
   status?: string;
+  assigned_to?: string;
+  notes?: string;
+  resume_path?: string;
   created_at?: string;
+  updated_at?: string;
 };
 
-export async function getInquiries(): Promise<Inquiry[]> {
+/**
+ * Columns added by supabase/migrations/2026-10-02-inquiries-structured.sql.
+ * If the migration hasn't run yet, inserts/updates that mention these fail
+ * with an "unknown column" error — createInquiry() catches that and retries
+ * without them, so a lead is never lost to a deploy-order mistake.
+ */
+const INQUIRY_EXTENDED_COLUMNS = [
+  "form_type", "details", "page_url", "referrer",
+  "utm_source", "utm_medium", "utm_campaign", "utm_content",
+  "sms_consent", "assigned_to", "resume_path", "updated_at",
+] as const;
+
+function isUnknownColumnError(err: unknown): boolean {
+  const e = err as { code?: string; message?: string } | null;
+  if (!e) return false;
+  // PGRST204 = PostgREST "column not found in schema cache"; 42703 = Postgres undefined_column.
+  if (e.code === "PGRST204" || e.code === "42703") return true;
+  return /column/i.test(e.message ?? "") && /(not find|does not exist|schema cache)/i.test(e.message ?? "");
+}
+
+function stripExtendedColumns<T extends Record<string, unknown>>(row: T): Partial<T> {
+  const out: Record<string, unknown> = { ...row };
+  for (const col of INQUIRY_EXTENDED_COLUMNS) delete out[col];
+  return out as Partial<T>;
+}
+
+export type InquiryListOptions = {
+  status?: string;
+  formType?: string;
+  /** Case-insensitive match on name, email, phone, message. */
+  search?: string;
+  limit?: number;
+};
+
+export async function getInquiries(opts: InquiryListOptions = {}): Promise<Inquiry[]> {
   if (!isSupabaseConfigured) return [];
-  const { data, error } = await supabaseAdmin()
+  let q = supabaseAdmin()
     .from("inquiries")
     .select("*")
     .order("created_at", { ascending: false })
-    .limit(50);
-  if (error) throw error;
+    .limit(opts.limit ?? 500);
+  if (opts.status) q = q.eq("status", opts.status);
+  if (opts.formType) q = q.or(`form_type.eq.${opts.formType},and(form_type.is.null,source.eq.${opts.formType})`);
+  if (opts.search) {
+    const s = opts.search.replace(/[%,()]/g, " ").trim();
+    if (s) q = q.or(`name.ilike.%${s}%,email.ilike.%${s}%,phone.ilike.%${s}%,message.ilike.%${s}%`);
+  }
+  const { data, error } = await q;
+  if (error) {
+    // Pre-migration databases don't have form_type; fall back to the old shape
+    // rather than blanking the admin.
+    if (opts.formType && isUnknownColumnError(error)) {
+      return getInquiries({ ...opts, formType: undefined }).then((rows) =>
+        rows.filter((r) => (r.form_type || r.source) === opts.formType),
+      );
+    }
+    throw error;
+  }
   return (data ?? []) as Inquiry[];
+}
+
+export async function getInquiry(id: string): Promise<Inquiry | null> {
+  if (!isSupabaseConfigured) return null;
+  const { data, error } = await supabaseAdmin().from("inquiries").select("*").eq("id", id).maybeSingle();
+  if (error) throw error;
+  return (data as Inquiry | null) ?? null;
 }
 
 export async function createInquiry(data: Inquiry): Promise<Inquiry> {
@@ -447,9 +523,48 @@ export async function createInquiry(data: Inquiry): Promise<Inquiry> {
     // No-op in JSON mode (we don't persist inquiries to JSON)
     return data;
   }
-  const { data: row, error } = await supabaseAdmin().from("inquiries").insert(data).select("*").single();
+  const db = supabaseAdmin();
+  const first = await db.from("inquiries").insert(data).select("*").single();
+  if (!first.error) return first.data as Inquiry;
+
+  if (isUnknownColumnError(first.error)) {
+    console.warn(
+      "createInquiry: inquiries table is missing the structured columns — run supabase/migrations/2026-10-02-inquiries-structured.sql. Saving legacy shape.",
+    );
+    const retry = await db.from("inquiries").insert(stripExtendedColumns(data)).select("*").single();
+    if (retry.error) throw retry.error;
+    return retry.data as Inquiry;
+  }
+  throw first.error;
+}
+
+export type InquiryPatch = Partial<Pick<Inquiry, "status" | "assigned_to" | "notes">>;
+
+export async function updateInquiry(id: string, patch: InquiryPatch): Promise<Inquiry | null> {
+  if (!isSupabaseConfigured) return null;
+  const clean: Record<string, unknown> = {};
+  if (patch.status !== undefined) clean.status = patch.status;
+  if (patch.assigned_to !== undefined) clean.assigned_to = patch.assigned_to || null;
+  if (patch.notes !== undefined) clean.notes = patch.notes;
+  if (Object.keys(clean).length === 0) return getInquiry(id);
+
+  const db = supabaseAdmin();
+  const first = await db.from("inquiries").update(clean).eq("id", id).select("*").maybeSingle();
+  if (!first.error) return (first.data as Inquiry | null) ?? null;
+  if (isUnknownColumnError(first.error) && "assigned_to" in clean) {
+    delete clean.assigned_to;
+    const retry = await db.from("inquiries").update(clean).eq("id", id).select("*").maybeSingle();
+    if (retry.error) throw retry.error;
+    return (retry.data as Inquiry | null) ?? null;
+  }
+  throw first.error;
+}
+
+export async function deleteInquiry(id: string): Promise<boolean> {
+  if (!isSupabaseConfigured) return false;
+  const { error, count } = await supabaseAdmin().from("inquiries").delete({ count: "exact" }).eq("id", id);
   if (error) throw error;
-  return row as Inquiry;
+  return (count ?? 0) > 0;
 }
 
 // =================================================================

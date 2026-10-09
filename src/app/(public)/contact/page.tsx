@@ -1,14 +1,25 @@
 import SmartForm from "@/components/public/SmartForm";
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Contact — AJ Commercial Group",
   description:
     "Talk directly with a real broker on the AJ Commercial Group team. We respond within one business day — usually faster.",
-  alternates: { canonical: "/contact" },
-};
+  path: "/contact",
+});
 
-export default function ContactPage() {
+// Broker pages link here as /contact?broker=<slug>. The slug rides along as a
+// hidden field so the admin can see which broker the visitor wanted — before
+// this, every "Contact Joey" click produced a lead with no broker on it.
+export default async function ContactPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const sp = await searchParams;
+  const brokerParam = Array.isArray(sp.broker) ? sp.broker[0] : sp.broker;
+  const brokerSlug = brokerParam && /^[a-z0-9-]{1,80}$/.test(brokerParam) ? brokerParam : "";
   return (
     <>
       <section className="page-header with-skyline">
@@ -40,6 +51,7 @@ export default function ContactPage() {
                 </>
               }
             >
+              {brokerSlug ? <input type="hidden" name="broker_slug" value={brokerSlug} /> : null}
               <div className="form-grid">
                 <div>
                   <label className="form-label">First Name</label>
@@ -63,7 +75,11 @@ export default function ContactPage() {
               <div className="form-grid full">
                 <div>
                   <label className="form-label">What is this about?</label>
-                  <select className="form-select" name="inquiry_type">
+                  {/* Blank default on purpose: with "selling" preselected, every
+                      contact lead was being filed as a seller whether or not the
+                      visitor touched this. */}
+                  <select className="form-select" name="inquiry_type" required defaultValue="">
+                    <option value="" disabled>Select one…</option>
                     <option>I&apos;m thinking about selling</option>
                     <option>I&apos;m looking to buy</option>
                     <option>I want to do a 1031 exchange</option>

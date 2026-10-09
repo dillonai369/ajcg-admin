@@ -1,12 +1,13 @@
 import SmartForm from "@/components/public/SmartForm";
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Buying Multifamily — AJ Commercial Group",
   description:
     "Get matched with off-market and pre-launch multifamily acquisitions across Chicagoland and the Midwest. Tell us what you're hunting for.",
-  alternates: { canonical: "/buying" },
-};
+  path: "/buying",
+});
 
 export default function BuyingPage() {
   return (

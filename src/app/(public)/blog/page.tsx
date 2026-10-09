@@ -1,15 +1,16 @@
 import Link from "next/link";
 import { getPosts } from "@/lib/data";
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Insights — AJ Commercial Group",
   description:
     "Strategic notes on disposition, lending, 1031 exchanges, market trends, and tax planning — written for multifamily owners.",
-  alternates: { canonical: "/blog" },
-};
+  path: "/blog",
+});
 
 function normalizeImg(url?: string) {
   if (!url) return "";

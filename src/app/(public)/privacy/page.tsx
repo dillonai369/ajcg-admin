@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Privacy Policy — AJ Commercial Group",
   description:
     "How AJ Commercial Group collects, uses, and protects your information, including our SMS/text messaging and mobile opt-in policy.",
-  alternates: { canonical: "https://www.ajcommercialgroup.com/privacy" },
-};
+  path: "/privacy",
+});
 
 const UPDATED = "July 8, 2026";
 

@@ -16,10 +16,26 @@ export async function generateMetadata({
   if (!broker || !isPubliclyVisibleBroker(broker)) {
     return { title: "Broker — AJ Commercial Group", robots: { index: false, follow: false } };
   }
+  const title = `${broker.name} — AJ Commercial Group`;
+  const description = broker.meta_description || broker.bio?.slice(0, 160) || `${broker.name} — ${broker.title}`;
+  const photo = normalizeImg(broker.photo_url) || "/assets/og-image.jpg";
   return {
-    title: `${broker.name} — AJ Commercial Group`,
-    description: broker.meta_description || broker.bio?.slice(0, 160) || `${broker.name} — ${broker.title}`,
+    title,
+    description,
     alternates: { canonical: `/broker/${slug}` },
+    // Per-page share card. Without this every broker link shared on LinkedIn
+    // or iMessage showed the homepage title and team photo instead of the broker.
+    // A page-level openGraph replaces the root one, so site name/locale repeat.
+    openGraph: {
+      type: "profile",
+      siteName: "AJ Commercial Group",
+      locale: "en_US",
+      title,
+      description,
+      url: `/broker/${slug}`,
+      images: [{ url: photo, alt: broker.name }],
+    },
+    twitter: { card: "summary", title, description, images: [photo] },
   };
 }
 
@@ -169,7 +185,7 @@ export default async function BrokerPage({ params }: { params: Promise<{ slug: s
               </p>
             </div>
             <div className="cta-actions">
-              <Link href="/contact" className="btn btn-primary btn-arrow" style={{ justifyContent: "center", padding: "18px 30px" }}>
+              <Link href={`/contact?broker=${encodeURIComponent(broker.slug)}`} className="btn btn-primary btn-arrow" style={{ justifyContent: "center", padding: "18px 30px" }}>
                 Contact {broker.name.split(" ")[0]}
               </Link>
               {tel && !broker.hide_phone ? (

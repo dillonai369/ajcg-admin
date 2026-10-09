@@ -2,15 +2,16 @@ import Link from "next/link";
 import { getBrokers } from "@/lib/data";
 import type { Metadata } from "next";
 import type { Broker } from "@/lib/types";
+import { pageMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Our Team — AJ Commercial Group",
   description:
     "Meet the brokers and transaction coordinators behind AJ Commercial Group — Chicago and Midwest multifamily specialists.",
-  alternates: { canonical: "/our-team" },
-};
+  path: "/our-team",
+});
 
 function teamPhotoStyle(broker: Broker) {
   const url = broker.card_photo_url || broker.photo_url;

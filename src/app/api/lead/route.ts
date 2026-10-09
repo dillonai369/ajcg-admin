@@ -42,6 +42,7 @@ export async function POST(req: Request) {
   // Bots get a 200 so they think it worked and stop retrying.
   const verdict = screenSubmission({
     honeypot: body.website_url,
+    formElapsedMs: body.__form_elapsed_ms,
     formLoadedAt: body.__form_loaded_at,
     name: typeof body.name === "string" ? body.name : "",
     email: typeof body.email === "string" ? body.email : "",
@@ -55,7 +56,7 @@ export async function POST(req: Request) {
   }
 
   // Strip bot-protection fields before relaying
-  const { website_url: _hp, __form_loaded_at: _t, ...cleanBody } = body;
+  const { website_url: _hp, __form_loaded_at: _t, __form_elapsed_ms: _e, ...cleanBody } = body;
 
   const enriched = {
     ...cleanBody,

@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Terms of Service — AJ Commercial Group",
   description:
     "The terms and conditions governing your use of the AJ Commercial Group website and services.",
-  alternates: { canonical: "https://www.ajcommercialgroup.com/terms" },
-};
+  path: "/terms",
+});
 
 const UPDATED = "July 8, 2026";
 

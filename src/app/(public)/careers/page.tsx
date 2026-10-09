@@ -1,12 +1,13 @@
 import SmartForm from "@/components/public/SmartForm";
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Careers — AJ Commercial Group",
   description:
     "Join a multifamily brokerage team that thinks like owners and builds real careers — not just commissions.",
-  alternates: { canonical: "/careers" },
-};
+  path: "/careers",
+});
 
 export default function CareersPage() {
   return (
@@ -134,7 +135,7 @@ export default function CareersPage() {
               </div>
               <div>
                 <label className="form-label">Resume</label>
-                <input className="form-input" type="file" name="resume" />
+                <input className="form-input" type="file" name="resume" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
               </div>
             </div>
             <div className="form-grid full">
