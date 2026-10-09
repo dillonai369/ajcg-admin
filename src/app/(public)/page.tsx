@@ -75,12 +75,16 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* Track-record stats. Updated 2026-10-09 per Mary (AJCG): +$24,809,400 in
+          transactions ($156.2M → $181.0M), +174 units (1,534 → 1,708), +22 closed
+          deals (90 → 112). The real numbers are rendered server-side so crawlers
+          and no-JS visitors see them; HomeScripts resets to 0 and animates up. */}
       <section className="stats">
         <div className="wrap">
           <div className="stats-grid">
             <div>
               <div className="stat-num">
-                $<span className="counter" data-target="156.2" data-decimals="1">0</span>
+                $<span className="counter" data-target="181">181</span>
                 <em>M+</em>
               </div>
               <div className="stat-divider"></div>
@@ -88,21 +92,21 @@ export default async function HomePage() {
             </div>
             <div>
               <div className="stat-num">
-                <span className="counter" data-target="1534">0</span>
+                <span className="counter" data-target="1708">1,708</span>
               </div>
               <div className="stat-divider"></div>
               <div className="stat-label">Units Sold</div>
             </div>
             <div>
               <div className="stat-num">
-                <span className="counter" data-target="90">0</span>
+                <span className="counter" data-target="112">112</span>
               </div>
               <div className="stat-divider"></div>
               <div className="stat-label">Closed Deals</div>
             </div>
             <div>
               <div className="stat-num">
-                <span className="counter" data-target="4">0</span>
+                <span className="counter" data-target="4">4</span>
               </div>
               <div className="stat-divider"></div>
               <div className="stat-label">Markets Served</div>
