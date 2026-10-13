@@ -9,23 +9,28 @@
  */
 import fs from "fs/promises";
 import path from "path";
-import { unstable_cache } from "next/cache";
 import type { Broker, Property, Post } from "./types";
 import { isSupabaseConfigured, supabaseAdmin } from "./supabase";
 
 // =================================================================
-// CACHING NOTES
+// CACHING NOTES (2026-10-13: read caching REMOVED on purpose)
 // =================================================================
-// Each public-site read goes through unstable_cache so we don't hit Supabase
-// on every visitor click. Cache lives for 60s, then refreshes in the
-// background. Admin save handlers call revalidateTag("brokers" | "properties"
-// | "posts") to invalidate immediately when content changes.
+// Reads used to go through unstable_cache (60s, tag-invalidated by the admin
+// save handlers). Two things made that wrong for this deployment:
 //
-// This is intentionally done at the data layer (not the page layer) so we
-// keep the pages' `force-dynamic` flag. That keeps build-time pre-rendering
-// off — pages still render on each request, they just don't re-query
-// Supabase if the cache is warm.
-const CACHE_TTL_SECONDS = 60;
+//   1. The public site (www) and the admin (app.) are separate Vercel
+//      projects with separate data caches. revalidateTag() in a save handler
+//      only clears the cache of the deployment that ran it, so www kept
+//      serving the old row for up to a minute after an admin edit.
+//   2. unstable_cache is stale-while-revalidate: the first request after the
+//      TTL still returns the OLD value and refreshes in the background. Under
+//      light traffic that "first request" is the editor checking their work —
+//      Mary edited 80 listings' SEO fields, opened the pages, saw the old
+//      titles, and reasonably concluded the saves had reverted. They hadn't.
+//
+// Every page is already force-dynamic, so each view now does one direct
+// Supabase read (tens of ms). The API routes still call revalidateTag — it's
+// harmless and keeps any future route-level caching correct.
 
 // =================================================================
 // JSON FALLBACK (kept for local dev before Supabase is configured)
@@ -65,37 +70,25 @@ async function writeJsonAtomic(file: string, data: unknown): Promise<void> {
 // =================================================================
 // BROKERS
 // =================================================================
-const _getBrokersCached = unstable_cache(
-  async (): Promise<Broker[]> => {
+export async function getBrokers(): Promise<Broker[]> {
+  if (isSupabaseConfigured) {
     const { data, error } = await supabaseAdmin()
       .from("brokers")
       .select("*")
       .order("display_order", { ascending: true });
     if (error) throw error;
     return (data ?? []) as Broker[];
-  },
-  ["brokers-all"],
-  { revalidate: CACHE_TTL_SECONDS, tags: ["brokers"] },
-);
-
-export async function getBrokers(): Promise<Broker[]> {
-  if (isSupabaseConfigured) return _getBrokersCached();
+  }
   const list = await readJson<Broker[]>(BROKERS_FILE);
   return [...list].sort((a, b) => (a.display_order ?? 999) - (b.display_order ?? 999));
 }
 
-const _getBrokerCached = unstable_cache(
-  async (slug: string): Promise<Broker | null> => {
+export async function getBroker(slug: string): Promise<Broker | null> {
+  if (isSupabaseConfigured) {
     const { data, error } = await supabaseAdmin().from("brokers").select("*").eq("slug", slug).maybeSingle();
     if (error) throw error;
     return (data as Broker) ?? null;
-  },
-  ["broker-by-slug"],
-  { revalidate: CACHE_TTL_SECONDS, tags: ["brokers"] },
-);
-
-export async function getBroker(slug: string): Promise<Broker | null> {
-  if (isSupabaseConfigured) return _getBrokerCached(slug);
+  }
   const list = await readJson<Broker[]>(BROKERS_FILE);
   return list.find((b) => b.slug === slug) ?? null;
 }
@@ -185,8 +178,8 @@ export async function deleteBroker(slug: string): Promise<boolean> {
 // =================================================================
 // PROPERTIES
 // =================================================================
-const _getPropertiesCached = unstable_cache(
-  async (): Promise<Property[]> => {
+export async function getProperties(): Promise<Property[]> {
+  if (isSupabaseConfigured) {
     // Order by created_at desc so newly-added listings always appear first.
     const { data, error } = await supabaseAdmin()
       .from("properties")
@@ -194,28 +187,16 @@ const _getPropertiesCached = unstable_cache(
       .order("created_at", { ascending: false, nullsFirst: false });
     if (error) throw error;
     return (data ?? []) as Property[];
-  },
-  ["properties-all"],
-  { revalidate: CACHE_TTL_SECONDS, tags: ["properties"] },
-);
-
-export async function getProperties(): Promise<Property[]> {
-  if (isSupabaseConfigured) return _getPropertiesCached();
+  }
   return readJson<Property[]>(PROPERTIES_FILE);
 }
 
-const _getPropertyCached = unstable_cache(
-  async (slug: string): Promise<Property | null> => {
+export async function getProperty(slug: string): Promise<Property | null> {
+  if (isSupabaseConfigured) {
     const { data, error } = await supabaseAdmin().from("properties").select("*").eq("slug", slug).maybeSingle();
     if (error) throw error;
     return (data as Property) ?? null;
-  },
-  ["property-by-slug"],
-  { revalidate: CACHE_TTL_SECONDS, tags: ["properties"] },
-);
-
-export async function getProperty(slug: string): Promise<Property | null> {
-  if (isSupabaseConfigured) return _getPropertyCached(slug);
+  }
   const list = await readJson<Property[]>(PROPERTIES_FILE);
   return list.find((p) => p.slug === slug) ?? null;
 }
@@ -294,36 +275,24 @@ export async function deleteProperty(slug: string): Promise<boolean> {
 // =================================================================
 // POSTS
 // =================================================================
-const _getPostsCached = unstable_cache(
-  async (): Promise<Post[]> => {
+export async function getPosts(): Promise<Post[]> {
+  if (isSupabaseConfigured) {
     const { data, error } = await supabaseAdmin()
       .from("posts")
       .select("*")
       .order("published_at", { ascending: false, nullsFirst: false });
     if (error) throw error;
     return (data ?? []) as Post[];
-  },
-  ["posts-all"],
-  { revalidate: CACHE_TTL_SECONDS, tags: ["posts"] },
-);
-
-export async function getPosts(): Promise<Post[]> {
-  if (isSupabaseConfigured) return _getPostsCached();
+  }
   return readJson<Post[]>(POSTS_FILE);
 }
 
-const _getPostCached = unstable_cache(
-  async (slug: string): Promise<Post | null> => {
+export async function getPost(slug: string): Promise<Post | null> {
+  if (isSupabaseConfigured) {
     const { data, error } = await supabaseAdmin().from("posts").select("*").eq("slug", slug).maybeSingle();
     if (error) throw error;
     return (data as Post) ?? null;
-  },
-  ["post-by-slug"],
-  { revalidate: CACHE_TTL_SECONDS, tags: ["posts"] },
-);
-
-export async function getPost(slug: string): Promise<Post | null> {
-  if (isSupabaseConfigured) return _getPostCached(slug);
+  }
   const list = await readJson<Post[]>(POSTS_FILE);
   return list.find((p) => p.slug === slug) ?? null;
 }

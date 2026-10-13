@@ -10,6 +10,7 @@
     "seed": "tsx supabase/seed.ts",
     "seed:blog": "tsx supabase/seed-blog.ts",
     "migrate:images": "tsx supabase/migrate-images.ts",
+    "seo:listings": "tsx supabase/apply-listing-seo.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

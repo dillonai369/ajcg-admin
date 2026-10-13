@@ -4,6 +4,7 @@ import { getProperty, getBrokers } from "@/lib/data";
 import type { Metadata } from "next";
 import type { Broker } from "@/lib/types";
 import { isPubliclyVisibleProperty } from "@/lib/visibility";
+import { buildListingMetaTitle, buildListingMetaDescription } from "@/lib/listing-seo";
 import SmartForm from "@/components/public/SmartForm";
 
 export const dynamic = "force-dynamic";
@@ -20,13 +21,13 @@ export async function generateMetadata({
   if (!property || !isPubliclyVisibleProperty(property)) {
     return { title: "Listing — AJ Commercial Group", robots: { index: false, follow: false } };
   }
-  const title = property.meta_title || `${property.name} — AJ Commercial Group`;
-  // Search engines truncate past ~160 characters; the full description was
-  // going out untrimmed, so snippets cut off mid-sentence.
-  const description = clip(
-    property.meta_description || property.description || `${property.name} — ${property.units}-Unit ${property.type}`,
-    160,
-  );
+  // House SEO template (see src/lib/listing-seo.ts) is the default for every
+  // listing; a value typed in the admin's SEO fields overrides it.
+  const title = (property.meta_title || "").trim() || buildListingMetaTitle(property);
+  // Guard against the full multi-paragraph listing description going out as a
+  // meta description; the house template (~180 chars) is left intact — Google
+  // trims the snippet itself and often shows more than 160 on desktop.
+  const description = clip((property.meta_description || "").trim() || buildListingMetaDescription(property), 300);
   const hero = normalizeImg(property.hero_image || property.images?.[0]) || "/assets/og-image.jpg";
   return {
     title,

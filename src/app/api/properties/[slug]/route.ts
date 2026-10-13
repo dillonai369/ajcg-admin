@@ -3,6 +3,8 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { getProperty, saveProperty, deleteProperty } from "@/lib/data";
 import { requireApproved } from "@/lib/access";
 import { cleanPropertyInput, readJsonBody } from "@/lib/validate";
+import { withListingSeoDefaults } from "@/lib/listing-seo";
+import type { Property } from "@/lib/types";
 
 type Ctx = { params: Promise<{ slug: string }> };
 
@@ -29,7 +31,13 @@ export async function PUT(req: Request, ctx: Ctx) {
   const body = await readJsonBody(req);
   if (!body) return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   try {
-    const updated = await saveProperty(slug, cleanPropertyInput(body));
+    const clean = cleanPropertyInput(body);
+    // Blank SEO fields get the house template (Mary's format) so every
+    // listing ships with a proper title/description without anyone typing it.
+    const existing = await getProperty(slug);
+    if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
+    const patch = withListingSeoDefaults(clean, { ...existing, ...clean } as Property);
+    const updated = await saveProperty(slug, patch);
     if (!updated) return NextResponse.json({ error: "Not found" }, { status: 404 });
     invalidatePublicCaches(slug);
     return NextResponse.json(updated);

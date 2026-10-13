@@ -7,6 +7,7 @@ import type { Property, Broker } from "@/lib/types";
 import PhotoUpload from "@/components/PhotoUpload";
 import { Field, FieldInput, FieldSelect, FieldTextarea, FieldLabel } from "@/components/ui/FieldInput";
 import { AIInlineAssist } from "@/components/AIAssistPanel";
+import { buildListingMetaTitle, buildListingMetaDescription } from "@/lib/listing-seo";
 
 const STATUS_OPTIONS = ["Coming Soon", "For Sale", "Under Contract", "Sold", "Draft"];
 const TYPE_OPTIONS = ["Multifamily", "Mixed-Use", "Retail", "Office", "Industrial"];
@@ -325,13 +326,40 @@ export default function ListingEditor({ initial }: { initial: Property }) {
           </div>
 
           <div className="card p-5">
-            <h4 className="font-semibold text-sm mb-3">SEO</h4>
-            <FieldLabel>URL slug</FieldLabel>
-            <div className="text-xs font-mono bg-slate-50 border border-slate-200 rounded px-2 py-1.5 mb-3 truncate">/sold/{form.slug}</div>
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="font-semibold text-sm">SEO</h4>
+              <button
+                type="button"
+                className="text-xs text-slate-500 hover:text-slate-800 underline"
+                title="Fill both fields with the house template built from this listing's units, town and county"
+                onClick={() => patch({ meta_title: buildListingMetaTitle(form), meta_description: buildListingMetaDescription(form) })}
+              >
+                Use template
+              </button>
+            </div>
+            <FieldLabel>URL</FieldLabel>
+            <div className="text-xs font-mono bg-slate-50 border border-slate-200 rounded px-2 py-1.5 mb-3 truncate">/property/{form.slug}</div>
+            {/* Blank = the template is used automatically on the live site. The
+                placeholder shows exactly what that will be; typing overrides it. */}
             <FieldLabel>Meta title</FieldLabel>
-            <FieldInput className="mb-3" value={form.meta_title ?? form.name} onChange={(e) => patch({ meta_title: e.target.value })} />
+            <FieldInput
+              className="mb-1"
+              value={form.meta_title ?? ""}
+              placeholder={buildListingMetaTitle(form)}
+              onChange={(e) => patch({ meta_title: e.target.value })}
+            />
+            <p className="text-[11px] text-slate-400 mb-3">Leave blank to use the template shown.</p>
             <FieldLabel>Meta description</FieldLabel>
-            <FieldTextarea rows={3} value={form.meta_description ?? form.description} onChange={(e) => patch({ meta_description: e.target.value })} />
+            <FieldTextarea
+              rows={4}
+              value={form.meta_description ?? ""}
+              placeholder={buildListingMetaDescription(form)}
+              onChange={(e) => patch({ meta_description: e.target.value })}
+            />
+            <p className="text-[11px] text-slate-400 mt-1">
+              {(form.meta_description ?? "").length > 0 ? `${(form.meta_description ?? "").length} characters` : "Leave blank to use the template shown."}
+              {(form.meta_description ?? "").length > 160 ? " — Google cuts off after ~160." : ""}
+            </p>
           </div>
 
           <div className="card p-5">
