@@ -19,6 +19,14 @@ const nextConfig = {
         source: "/assets/:path*",
         headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
       },
+      // The admin host (app.ajcommercialgroup.com) is a login wall, not a
+      // website — keep every page on it out of search engines. The public
+      // site on www is unaffected (this rule only matches the app. host).
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "app.ajcommercialgroup.com" }],
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
       {
         source: "/:path*",
         headers: [

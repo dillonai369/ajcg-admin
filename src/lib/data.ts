@@ -178,15 +178,29 @@ export async function deleteBroker(slug: string): Promise<boolean> {
 // =================================================================
 // PROPERTIES
 // =================================================================
+/**
+ * Every column except `body` (the long write-up). Measured 2026-10-16: the
+ * homepage and /recently-sold spent ~1.3s of their ~1.4s response time pulling
+ * all 80 listings with `select *`; a single-row page took ~0.3s. List views
+ * never render `body` — only the detail page does, via getProperty().
+ */
+const PROPERTY_LIST_COLUMNS = [
+  "id", "slug", "page_slug", "name", "location", "address", "city", "state", "zip", "neighborhood", "submarket",
+  "units", "type", "status", "description", "hero_image", "images", "total_sqft", "lot_size", "year_built",
+  "year_renovated", "stories", "building_class", "parking", "heating", "sale_price", "sale_date", "cap_rate", "noi",
+  "gross_income", "hide_sale_price", "highlights", "broker_slugs", "feature_on_homepage", "show_in_sold_carousel",
+  "canonical_url", "meta_title", "meta_description", "created_at", "updated_at",
+].join(",");
+
 export async function getProperties(): Promise<Property[]> {
   if (isSupabaseConfigured) {
     // Order by created_at desc so newly-added listings always appear first.
     const { data, error } = await supabaseAdmin()
       .from("properties")
-      .select("*")
+      .select(PROPERTY_LIST_COLUMNS)
       .order("created_at", { ascending: false, nullsFirst: false });
     if (error) throw error;
-    return (data ?? []) as Property[];
+    return (data ?? []) as unknown as Property[];
   }
   return readJson<Property[]>(PROPERTIES_FILE);
 }
@@ -275,14 +289,20 @@ export async function deleteProperty(slug: string): Promise<boolean> {
 // =================================================================
 // POSTS
 // =================================================================
+/** Every column except `blocks` (the full article, ~10k words across the 10 SEO posts). Detail pages use getPost(). */
+const POST_LIST_COLUMNS = [
+  "id", "slug", "title", "excerpt", "category", "tags", "status", "hero_image", "hero_alt", "hero_image_class",
+  "author_slug", "published_at", "views", "meta_title", "meta_description", "created_at", "updated_at",
+].join(",");
+
 export async function getPosts(): Promise<Post[]> {
   if (isSupabaseConfigured) {
     const { data, error } = await supabaseAdmin()
       .from("posts")
-      .select("*")
+      .select(POST_LIST_COLUMNS)
       .order("published_at", { ascending: false, nullsFirst: false });
     if (error) throw error;
-    return (data ?? []) as Post[];
+    return (data ?? []) as unknown as Post[];
   }
   return readJson<Post[]>(POSTS_FILE);
 }
