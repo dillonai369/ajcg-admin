@@ -120,14 +120,35 @@ export const POST_FIELDS = [
   "meta_description",
 ] as const;
 
+/**
+ * Image fields must be URLs, never inline base64 blobs. One listing saved with
+ * a "data:image/..." hero made every list query on the site return 8.5 MB
+ * (found 2026-10-16) — that single row was the whole "slow homepage". Inline
+ * images are dropped here; the editors upload through /api/upload instead.
+ */
+const IMAGE_FIELDS = new Set(["hero_image", "images", "photo_url", "card_photo_url"]);
+const MAX_URL_LENGTH = 2048;
+
+function stripInlineImages<T extends Record<string, unknown>>(obj: T): T {
+  const out: Record<string, unknown> = { ...obj };
+  for (const key of IMAGE_FIELDS) {
+    if (!(key in out)) continue;
+    const v = out[key];
+    const bad = (s: unknown) => typeof s === "string" && (s.startsWith("data:") || s.length > MAX_URL_LENGTH);
+    if (Array.isArray(v)) out[key] = v.filter((s) => !bad(s));
+    else if (bad(v)) delete out[key];
+  }
+  return out as T;
+}
+
 export function cleanPropertyInput(body: Record<string, unknown>) {
-  return pick(body, PROPERTY_FIELDS);
+  return stripInlineImages(pick(body, PROPERTY_FIELDS));
 }
 export function cleanBrokerInput(body: Record<string, unknown>) {
-  return pick(body, BROKER_FIELDS);
+  return stripInlineImages(pick(body, BROKER_FIELDS));
 }
 export function cleanPostInput(body: Record<string, unknown>) {
-  return pick(body, POST_FIELDS);
+  return stripInlineImages(pick(body, POST_FIELDS));
 }
 
 /** Parse a JSON request body defensively; returns null on failure. */

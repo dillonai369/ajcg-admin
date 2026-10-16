@@ -52,5 +52,18 @@ export async function GET(req: NextRequest) {
   out.push(await timed("raw fetch service-role, select=slug only", () => raw(`properties?select=slug`, key)));
   out.push(await timed("raw fetch service-role, cols+order (2nd call, warm conn)", () => raw(`properties?select=${COLS}&order=created_at.desc.nullslast`, key)));
 
-  return NextResponse.json({ region: process.env.VERCEL_REGION, node: process.version, results: out });
+  // Which row is huge, and which column? (sizes only — no content)
+  const { data: rows } = await sb.from("properties").select("*");
+  const sized = ((rows ?? []) as Record<string, unknown>[])
+    .map((r) => {
+      const fields = Object.entries(r)
+        .map(([k, v]) => [k, JSON.stringify(v ?? "").length] as const)
+        .filter(([, n]) => n > 5000)
+        .map(([k, n]) => `${k}=${(n / 1024).toFixed(0)}KB`);
+      return { slug: r.slug, status: r.status, totalKB: Math.round(JSON.stringify(r).length / 1024), bigFields: fields };
+    })
+    .sort((a, b) => b.totalKB - a.totalKB)
+    .slice(0, 5);
+
+  return NextResponse.json({ region: process.env.VERCEL_REGION, node: process.version, results: out, biggestRows: sized });
 }

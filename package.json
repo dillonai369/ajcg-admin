@@ -11,7 +11,8 @@
     "seed:blog": "tsx supabase/seed-blog.ts",
     "migrate:images": "tsx supabase/migrate-images.ts",
     "seo:listings": "tsx supabase/apply-listing-seo.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "fix:inline-images": "tsx supabase/fix-inline-images.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.1",
