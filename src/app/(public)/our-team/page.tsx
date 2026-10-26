@@ -3,6 +3,7 @@ import { getBrokers } from "@/lib/data";
 import type { Metadata } from "next";
 import type { Broker } from "@/lib/types";
 import { pageMetadata } from "@/lib/seo";
+import { optimizedImage, cssUrl } from "@/lib/image-url";
 
 export const dynamic = "force-dynamic";
 
@@ -16,9 +17,9 @@ export const metadata: Metadata = pageMetadata({
 function teamPhotoStyle(broker: Broker) {
   const url = broker.card_photo_url || broker.photo_url;
   if (!url) return undefined;
-  // Internal asset paths from the JSON were stored as "assets/team/...". Prepend a slash.
-  const normalized = url.startsWith("http") || url.startsWith("/") ? url : `/${url}`;
-  return { backgroundImage: `url('${normalized}')` };
+  // Team cards render ~300px wide; 640 covers 2x screens. Routed through the
+  // image optimizer so uploaded originals arrive resized + WebP.
+  return { backgroundImage: cssUrl(optimizedImage(url, 640)) };
 }
 
 function initials(name: string) {

@@ -12,7 +12,8 @@
     "migrate:images": "tsx supabase/migrate-images.ts",
     "seo:listings": "tsx supabase/apply-listing-seo.ts",
     "typecheck": "tsc --noEmit",
-    "fix:inline-images": "tsx supabase/fix-inline-images.ts"
+    "fix:inline-images": "tsx supabase/fix-inline-images.ts",
+    "compress:images": "tsx supabase/compress-images.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.1",
@@ -24,7 +25,8 @@
     "next": "^15.5.28",
     "react": "^18.3.1",
     "react-chartjs-2": "^5.2.0",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "sharp": "^0.35.5"
   },
   "devDependencies": {
     "@types/node": "^20.17.6",

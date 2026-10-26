@@ -6,6 +6,7 @@ import type { Broker } from "@/lib/types";
 import { isPubliclyVisibleProperty } from "@/lib/visibility";
 import { buildListingMetaTitle, buildListingMetaDescription } from "@/lib/listing-seo";
 import SmartForm from "@/components/public/SmartForm";
+import { normalizeImageUrl, optimizedImage, cssUrl } from "@/lib/image-url";
 
 export const dynamic = "force-dynamic";
 
@@ -58,13 +59,13 @@ function clip(s: string, max: number): string {
 
 const ACTIVE_STATUSES = new Set(["for sale", "under contract", "coming soon"]);
 
-function normalizeImg(url?: string) {
-  if (!url) return "";
-  return url.startsWith("http") || url.startsWith("/") ? url : `/${url}`;
-}
+// Raw URL — used for the Open Graph share image, which must be a plain
+// absolute-able URL (social crawlers don't resolve our /_next/image proxy).
+const normalizeImg = normalizeImageUrl;
 
+// Broker card photos render ~140px wide.
 function brokerCardPhoto(b: Broker) {
-  return normalizeImg(b.card_photo_url || b.photo_url);
+  return optimizedImage(b.card_photo_url || b.photo_url, 640);
 }
 
 /**
@@ -88,7 +89,8 @@ export default async function PropertyPage({ params }: { params: Promise<{ slug:
   // guesses the address-derived slug. Mirrors the DB's public-read RLS policy.
   if (!property || !isPubliclyVisibleProperty(property)) notFound();
 
-  const hero = normalizeImg(property.hero_image || property.images?.[0]);
+  // Full-bleed hero: 1920 covers desktop; optimizer still re-encodes to WebP.
+  const hero = optimizedImage(property.hero_image || property.images?.[0], 1920);
   const galleryImages = (property.images || []).filter((url) => url && url !== property.hero_image);
 
   // Listing team — look up broker docs by slug.
@@ -128,7 +130,7 @@ export default async function PropertyPage({ params }: { params: Promise<{ slug:
       <section
         className="property-hero"
         style={{
-          background: `linear-gradient(180deg, rgba(15,26,46,0.30) 0%, rgba(15,26,46,0.65) 100%), url('${hero}') center/cover, linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%)`,
+          background: `linear-gradient(180deg, rgba(15,26,46,0.30) 0%, rgba(15,26,46,0.65) 100%), ${cssUrl(hero)} center/cover, linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%)`,
         }}
       >
         <div className="wrap" style={{ height: "100%", display: "flex", alignItems: "flex-end" }}>
@@ -193,13 +195,14 @@ export default async function PropertyPage({ params }: { params: Promise<{ slug:
                 }}
               >
                 {galleryImages.map((src, i) => {
-                  const url = normalizeImg(src);
+                  // Gallery tiles are ≤ ~420px wide; 828 covers 2x screens.
+                  const url = optimizedImage(src, 828);
                   return (
                     <div
                       key={i}
                       style={{
                         aspectRatio: "4 / 3",
-                        backgroundImage: `url('${url}')`,
+                        backgroundImage: cssUrl(url),
                         backgroundSize: "cover",
                         backgroundPosition: "center",
                         borderRadius: "var(--radius)",

@@ -2,6 +2,10 @@ import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 import { ensureAndGetUserAccess } from "@/lib/access";
 import { readImageSize, MIN_WIDTH_BY_BUCKET } from "@/lib/image-meta";
+import { processImage } from "@/lib/image-process";
+
+// sharp is a native module; keep this route on the Node runtime.
+export const runtime = "nodejs";
 
 /** Return the real image MIME type from magic bytes, or null if not an image. */
 function sniffImageType(buf: Buffer): string | null {
@@ -80,12 +84,22 @@ export async function POST(req: Request) {
     );
   }
 
-  // Generate a unique key: <timestamp>-<sanitized-name>
-  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "-").slice(0, 80);
-  const key = `${Date.now()}-${safeName}`;
+  // Normalise: EXIF-rotate, cap at 2000px, re-encode (JPEG/WebP q82). A 3.9 MB
+  // phone PNG becomes ~300 KB with no visible change. GIFs and anything sharp
+  // can't decode are stored as uploaded. See src/lib/image-process.ts.
+  const processed = await processImage(buf, sniffed);
+  const body = processed ? processed.buffer : buf;
+  const contentType = processed ? processed.contentType : sniffed;
 
-  const { error } = await supabaseAdmin().storage.from(bucket).upload(key, buf, {
-    contentType: sniffed,
+  // Generate a unique key: <timestamp>-<sanitized-name>, with the extension
+  // matching what we actually stored.
+  const baseName = file.name.replace(/\.[a-zA-Z0-9]+$/, "").replace(/[^a-zA-Z0-9._-]/g, "-").slice(0, 70) || "image";
+  const origExt = (file.name.match(/\.([a-zA-Z0-9]+)$/)?.[1] || sniffed.split("/")[1] || "bin").toLowerCase();
+  const ext = processed && !processed.unchanged ? processed.ext : origExt;
+  const key = `${Date.now()}-${baseName}.${ext}`;
+
+  const { error } = await supabaseAdmin().storage.from(bucket).upload(key, body, {
+    contentType,
     upsert: false,
   });
   if (error) {

@@ -5,8 +5,16 @@ import BusinessSchema from "@/components/public/BusinessSchema";
 import { getProperties, getPosts } from "@/lib/data";
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
+import { optimizedImage, cssUrl } from "@/lib/image-url";
+import HeroVideo from "@/components/public/HeroVideo";
+import { preload } from "react-dom";
 
 export const dynamic = "force-dynamic";
+
+// Hero poster is the Largest Contentful Paint element on phones (the video is
+// not loaded there — see HeroVideo). Preloading it from the <head> saves the
+// browser discovering it only after React hydrates.
+const HERO_POSTER = "/assets/city/IMG_4595.JPG";
 
 // NOTE: the title deliberately leads with the brand name. It previously read
 // "Home — AJ Commercial Group", which is why Google was ranking inner pages
@@ -32,6 +40,7 @@ export const metadata: Metadata = pageMetadata({
  * cta) is verbatim from index.html — the design must stay identical.
  */
 export default async function HomePage() {
+  preload(HERO_POSTER, { as: "image", fetchPriority: "high" });
   const [properties, posts] = await Promise.all([getProperties(), getPosts()]);
 
   const sold = properties.filter((p) => (p.status || "").toLowerCase() === "sold");
@@ -48,16 +57,7 @@ export default async function HomePage() {
       <HasHeroFlag />
 
       <section className="hero hero-clean">
-        <video
-          className="hero-video"
-          autoPlay
-          muted
-          loop
-          playsInline
-          poster="/assets/city/IMG_4595.JPG"
-        >
-          <source src="/assets/video/hero.mp4" type="video/mp4" />
-        </video>
+        <HeroVideo src="/assets/video/hero.mp4" poster={HERO_POSTER} />
         <div className="hero-tint"></div>
         <div className="wrap hero-clean-inner">
           <h1>
@@ -125,7 +125,9 @@ export default async function HomePage() {
           </div>
           <div className="sold-grid">
             {carousel.map((p) => {
-              const photo = p.hero_image || p.images?.[0] || "";
+              // Through the image optimizer: these cards were the homepage's
+              // biggest cost (two raw 4 MB PNG uploads = 7.8 MB of a 12.4 MB page).
+              const photo = optimizedImage(p.hero_image || p.images?.[0], 828);
               const cityRaw = p.city || p.location || p.name || "";
               const cityShort = cityRaw.split(",")[0].split("·")[0].trim() || p.name;
               return (
@@ -133,7 +135,7 @@ export default async function HomePage() {
                   key={p.slug}
                   className="sold-card with-photo"
                   href={`/property/${p.slug}`}
-                  style={{ ["--bg-photo" as never]: `url('${photo}')` }}
+                  style={{ ["--bg-photo" as never]: cssUrl(photo) }}
                 >
                   <div className="sold-card-top">
                     <div className="sold-tag">{p.type || "Multifamily"}</div>
@@ -285,7 +287,7 @@ export default async function HomePage() {
                 <Link href={`/blog/${post.slug}`} key={post.slug} className="blog-card" style={{ display: "block" }}>
                   <div
                     className={post.hero_image ? "blog-img" : `blog-img blog-img-${i + 1}`}
-                    style={post.hero_image ? { backgroundImage: `url('${post.hero_image}')` } : undefined}
+                    style={post.hero_image ? { backgroundImage: cssUrl(optimizedImage(post.hero_image, 828)) } : undefined}
                   ></div>
                   <div className="blog-body">
                     <div className="blog-meta">{post.category}</div>

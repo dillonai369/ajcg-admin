@@ -3,6 +3,7 @@ import { getProperties } from "@/lib/data";
 import type { Metadata } from "next";
 import type { Property } from "@/lib/types";
 import { pageMetadata } from "@/lib/seo";
+import { optimizedImage, cssUrl } from "@/lib/image-url";
 
 // Always pull fresh from Supabase so admin-added listings show up immediately.
 // (Static cache from build time was excluding new rows even after revalidation.)
@@ -15,10 +16,9 @@ export const metadata: Metadata = pageMetadata({
   path: "/recently-sold",
 });
 
-function normalizeImg(url?: string) {
-  if (!url) return "";
-  return url.startsWith("http") || url.startsWith("/") ? url : `/${url}`;
-}
+// Cards render ~400px wide; 828 covers 2x phones. Routed through the image
+// optimizer so a 4 MB upload arrives as ~80 KB WebP (see src/lib/image-url.ts).
+const normalizeImg = (url?: string) => optimizedImage(url, 828);
 
 // Pull a short city/neighborhood label off the property, with fallbacks.
 function cityLabel(p: Property): string {
@@ -74,7 +74,7 @@ export default async function RecentlySoldPage() {
                   <div
                     className="city-img"
                     style={{
-                      backgroundImage: `linear-gradient(180deg, rgba(15,26,46,0.05) 0%, rgba(15,26,46,0.40) 100%), url('${img}')`,
+                      backgroundImage: `linear-gradient(180deg, rgba(15,26,46,0.05) 0%, rgba(15,26,46,0.40) 100%), ${cssUrl(img)}`,
                     }}
                   ></div>
                   <div className="city-card-body">

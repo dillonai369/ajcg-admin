@@ -2,12 +2,19 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    // Restrict the Next image optimizer to our own Supabase Storage host so it
-    // can't be abused to proxy/optimize images from arbitrary domains.
+    // Restrict the Next image optimizer to hosts we actually serve photos from
+    // so it can't be abused to proxy/optimize images from arbitrary domains.
+    // lirp.cdn-website.com = the old website-builder CDN; a handful of legacy
+    // listing/broker photos still point there (see supabase/migrate-images.ts).
     remotePatterns: [
       { protocol: "https", hostname: "*.supabase.co" },
       { protocol: "https", hostname: "*.supabase.in" },
+      { protocol: "https", hostname: "lirp.cdn-website.com" },
     ],
+    // Serve AVIF where the browser supports it (≈20–30% smaller than WebP).
+    formats: ["image/avif", "image/webp"],
+    // Optimized copies are immutable per URL; cache them for 30 days at the edge.
+    minimumCacheTTL: 60 * 60 * 24 * 30,
   },
 
   // Long-term cache for static assets in /public/assets — same as the old

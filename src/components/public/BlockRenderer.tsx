@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import type { PostBlock } from "@/lib/types";
+import { optimizedImage } from "@/lib/image-url";
 
 /**
  * Public renderer for the block-based blog body produced by BlockEditor.
@@ -15,10 +16,9 @@ import type { PostBlock } from "@/lib/types";
  * - Matches the public site's existing CSS classes so it looks native.
  */
 
-function normalizeImg(url?: string) {
-  if (!url) return "";
-  return url.startsWith("http") || url.startsWith("/") ? url : `/${url}`;
-}
+// Article body is ≤ 760px wide; 1080 covers 1.5x screens. Routed through the
+// image optimizer (see src/lib/image-url.ts) so uploads arrive resized + WebP.
+const normalizeImg = (url?: string) => optimizedImage(url, 1080);
 
 /** Parse a safe inline subset: [label](url) links and **bold**. */
 function renderInline(text: string, keyPrefix: string): ReactNode[] {

@@ -4,6 +4,7 @@ import { getPost, getPosts } from "@/lib/data";
 import type { Metadata } from "next";
 import { isPubliclyVisiblePost } from "@/lib/visibility";
 import BlockRenderer from "@/components/public/BlockRenderer";
+import { normalizeImageUrl, optimizedImage, cssUrl } from "@/lib/image-url";
 
 const BASE = "https://www.ajcommercialgroup.com";
 
@@ -51,10 +52,10 @@ export async function generateMetadata({
   };
 }
 
-function normalizeImg(url?: string) {
-  if (!url) return "";
-  return url.startsWith("http") || url.startsWith("/") ? url : `/${url}`;
-}
+// Raw URL — used for Open Graph + Article JSON-LD, which need a plain URL
+// (crawlers don't resolve our /_next/image proxy). The on-page hero below
+// goes through the optimizer instead.
+const normalizeImg = normalizeImageUrl;
 
 /**
  * Single blog post. For this initial migration we render the title, category,
@@ -128,7 +129,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
               style={{
                 width: "100%",
                 aspectRatio: "16 / 7",
-                backgroundImage: `url('${hero}')`,
+                backgroundImage: cssUrl(optimizedImage(hero, 1920)),
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 borderRadius: "var(--radius)",

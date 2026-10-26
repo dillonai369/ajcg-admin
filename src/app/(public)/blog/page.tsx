@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getPosts } from "@/lib/data";
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
+import { optimizedImage, cssUrl } from "@/lib/image-url";
 
 export const dynamic = "force-dynamic";
 
@@ -12,10 +13,8 @@ export const metadata: Metadata = pageMetadata({
   path: "/blog",
 });
 
-function normalizeImg(url?: string) {
-  if (!url) return "";
-  return url.startsWith("http") || url.startsWith("/") ? url : `/${url}`;
-}
+// Blog cards render ~400px wide; 828 covers 2x screens.
+const normalizeImg = (url?: string) => optimizedImage(url, 828);
 
 export default async function BlogIndexPage() {
   const posts = await getPosts();
@@ -50,7 +49,7 @@ export default async function BlogIndexPage() {
                 <Link href={`/blog/${p.slug}`} key={p.slug} className="blog-card" style={{ display: "block" }}>
                   <div
                     className={hero ? "blog-img" : `blog-img ${fallbackClass}`}
-                    style={hero ? { backgroundImage: `url('${hero}')` } : undefined}
+                    style={hero ? { backgroundImage: cssUrl(hero) } : undefined}
                   ></div>
                   <div className="blog-body">
                     <div className="blog-meta">{p.category}</div>

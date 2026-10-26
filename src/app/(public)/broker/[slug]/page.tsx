@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getBroker, getBrokers, getProperties } from "@/lib/data";
 import type { Metadata } from "next";
 import { isPubliclyVisibleBroker } from "@/lib/visibility";
+import { normalizeImageUrl, optimizedImage, cssUrl } from "@/lib/image-url";
 
 export const dynamic = "force-dynamic";
 
@@ -39,10 +40,8 @@ export async function generateMetadata({
   };
 }
 
-function normalizeImg(url?: string) {
-  if (!url) return "";
-  return url.startsWith("http") || url.startsWith("/") ? url : `/${url}`;
-}
+// Raw URL for the Open Graph share image (social crawlers can't use /_next/image).
+const normalizeImg = normalizeImageUrl;
 
 function telHref(phone?: string) {
   if (!phone) return undefined;
@@ -67,7 +66,8 @@ export default async function BrokerPage({ params }: { params: Promise<{ slug: s
   // 404 hidden brokers (show_on_team_page = false) — service-role reads bypass RLS.
   if (!broker || !isPubliclyVisibleBroker(broker)) notFound();
 
-  const heroPhoto = normalizeImg(broker.photo_url);
+  // Hero portrait renders ≤ ~420px wide; 828 covers 2x screens.
+  const heroPhoto = optimizedImage(broker.photo_url, 828);
   const bioParagraphs = (broker.bio || "").split(/\n\s*\n/).map((s) => s.trim()).filter(Boolean);
   const tel = telHref(broker.phone_raw || broker.phone);
 
@@ -147,7 +147,7 @@ export default async function BrokerPage({ params }: { params: Promise<{ slug: s
             </div>
             <div className="city-grid" style={{ marginTop: 50 }}>
               {brokerProperties.map((p) => {
-                const img = normalizeImg(p.hero_image || p.images?.[0]);
+                const img = optimizedImage(p.hero_image || p.images?.[0], 828);
                 const href = `/property/${p.slug}`;
                 const subtitle =
                   p.location ||
@@ -157,7 +157,7 @@ export default async function BrokerPage({ params }: { params: Promise<{ slug: s
                     <div
                       className="city-img"
                       style={{
-                        backgroundImage: `linear-gradient(180deg, rgba(15,26,46,0.05) 0%, rgba(15,26,46,0.40) 100%), url('${img}')`,
+                        backgroundImage: `linear-gradient(180deg, rgba(15,26,46,0.05) 0%, rgba(15,26,46,0.40) 100%), ${cssUrl(img)}`,
                       }}
                     ></div>
                     <div className="city-card-body">
