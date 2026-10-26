@@ -432,7 +432,7 @@ body.menu-open { overflow: hidden; touch-action: none; }
 .page-header.with-skyline {
   background:
     linear-gradient(180deg, rgba(15,26,46,0.72) 0%, rgba(15,26,46,0.82) 100%),
-    url('/assets/city/IMG_4593.JPG') center/cover,
+    url('/_next/image?url=%2Fassets%2Fcity%2FIMG_4593.JPG&w=1920&q=75') center/cover,
     linear-gradient(135deg, var(--navy-deep) 0%, var(--navy) 60%, var(--navy-light) 100%);
 }
 .page-header.with-skyline-day {
@@ -444,7 +444,7 @@ body.menu-open { overflow: hidden; touch-action: none; }
 .page-header.with-team-photo {
   background:
     linear-gradient(180deg, rgba(15,26,46,0.55) 0%, rgba(15,26,46,0.80) 100%),
-    url('/assets/team/IMG_4604.jpg') center 25%/cover,
+    url('/_next/image?url=%2Fassets%2Fteam%2FIMG_4604.jpg&w=1920&q=75') center 25%/cover,
     linear-gradient(135deg, var(--navy-deep) 0%, var(--navy) 60%, var(--navy-light) 100%);
 }
 .page-header-inner { position: relative; z-index: 2; text-align: center; }
@@ -457,6 +457,10 @@ body.menu-open { overflow: hidden; touch-action: none; }
   margin-bottom: 22px; display: inline-flex; align-items: center; gap: 12px;
 }
 .page-header .breadcrumb span { opacity: 0.6; }
+
+/* Large photo backgrounds go through the image optimizer (/_next/image) so
+   phones get a resized WebP/AVIF instead of the 200-400 KB original. The hero
+   poster (IMG_4595, 56 KB) is left raw so the CSS and the <img> share one request. */
 
 /* ---------- HERO (homepage) ---------- */
 .hero {
@@ -1296,7 +1300,7 @@ body.menu-open { overflow: hidden; touch-action: none; }
 .founders-text p { font-size: 17px; line-height: 1.75; margin-bottom: 18px; }
 .founders-text p:last-of-type { margin-bottom: 30px; }
 .founders-photo { background: linear-gradient(135deg, var(--navy) 0%, var(--brand-blue-deep) 100%); aspect-ratio: 4 / 5; position: relative; overflow: hidden; display: flex; align-items: flex-end; border-radius: var(--radius); }
-.founders-photo.real-photo { background: url('/assets/team/IMG_4588.jpg') center/cover; }
+.founders-photo.real-photo { background: url('/_next/image?url=%2Fassets%2Fteam%2FIMG_4588.jpg&w=1080&q=75') center/cover; }
 .founders-photo.real-photo::before { background: linear-gradient(180deg, rgba(15,26,46,0) 30%, rgba(15,26,46,0.55) 100%); }
 .founders-photo.real-photo .founders-avatars { display: none; }
 

@@ -1,4 +1,5 @@
 import "../../globals.css";
+import { ClerkProvider } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import { ensureAndGetUserAccess } from "@/lib/access";
@@ -16,10 +17,14 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     redirect("/pending-approval");
   }
 
+  // ClerkProvider lives here (not in the root layout) so the public site
+  // doesn't ship Clerk's JS — see src/app/layout.tsx.
   return (
-    <div className="flex min-h-screen">
-      <Sidebar isSuperAdmin={access.is_super_admin} />
-      <main className="flex-1 flex flex-col min-w-0">{children}</main>
-    </div>
+    <ClerkProvider>
+      <div className="flex min-h-screen">
+        <Sidebar isSuperAdmin={access.is_super_admin} />
+        <main className="flex-1 flex flex-col min-w-0">{children}</main>
+      </div>
+    </ClerkProvider>
   );
 }

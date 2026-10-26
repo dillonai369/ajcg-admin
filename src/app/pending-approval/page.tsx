@@ -1,9 +1,10 @@
-import { UserButton } from "@clerk/nextjs";
+import { ClerkProvider, UserButton } from "@clerk/nextjs";
 
 export const metadata = { title: "Pending Approval — AJ Commercial Group" };
 
 export default function PendingApprovalPage() {
   return (
+    <ClerkProvider>
     <div
       style={{
         minHeight: "100vh",
@@ -44,5 +45,6 @@ export default function PendingApprovalPage() {
         </div>
       </div>
     </div>
+    </ClerkProvider>
   );
 }

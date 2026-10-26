@@ -184,7 +184,7 @@ export default async function HomePage() {
           <div className="founders-stack">
             <div
               className="founders-stack-photo tall"
-              style={{ backgroundImage: "url('/assets/team/founders-joey-anthony.jpg')", backgroundPosition: "center 40%" }}
+              style={{ backgroundImage: cssUrl(optimizedImage("/assets/team/founders-joey-anthony.jpg", 1200)), backgroundPosition: "center 40%" }}
             >
               <div className="founders-stack-tag">Joey &amp; Anthony · Chicago</div>
             </div>
@@ -348,20 +348,20 @@ export default async function HomePage() {
               className="culture-grid-item tall"
               role="img"
               aria-label="Three AJ Commercial Group brokers in navy suits on the stone steps along the Chicago River"
-              style={{ backgroundImage: "url('/assets/team/culture-founders-steps.jpg')", backgroundPosition: "center 20%" }}
+              style={{ backgroundImage: cssUrl(optimizedImage("/assets/team/culture-founders-steps.jpg", 1080)), backgroundPosition: "center 20%" }}
             ></div>
             <div className="culture-grid-right">
               <div
                 className="culture-grid-item"
                 role="img"
                 aria-label="The full AJ Commercial Group team in the lobby of their Downers Grove office"
-                style={{ backgroundImage: "url('/assets/team/culture-team-lobby.jpg')", backgroundPosition: "center 45%" }}
+                style={{ backgroundImage: cssUrl(optimizedImage("/assets/team/culture-team-lobby.jpg", 1080)), backgroundPosition: "center 45%" }}
               ></div>
               <div
                 className="culture-grid-item"
                 role="img"
                 aria-label="Two brokers reviewing a deal together on a laptop"
-                style={{ backgroundImage: "url('/assets/team/culture-work-session.jpg')", backgroundPosition: "center" }}
+                style={{ backgroundImage: cssUrl(optimizedImage("/assets/team/culture-work-session.jpg", 1080)), backgroundPosition: "center" }}
               ></div>
             </div>
           </div>

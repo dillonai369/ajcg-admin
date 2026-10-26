@@ -130,12 +130,12 @@ export default async function OurTeamPage() {
             </p>
           </div>
           <div className="creatives-grid">
-            <div className="creative-card" style={{ backgroundImage: "url('/assets/creatives/IMG_4596.jpg')" }}></div>
-            <div className="creative-card" style={{ backgroundImage: "url('/assets/creatives/IMG_4597.jpg')" }}></div>
-            <div className="creative-card" style={{ backgroundImage: "url('/assets/creatives/IMG_4599.jpg')" }}></div>
-            <div className="creative-card" style={{ backgroundImage: "url('/assets/creatives/IMG_4600.jpg')" }}></div>
-            <div className="creative-card" style={{ backgroundImage: "url('/assets/creatives/IMG_4601.jpg')" }}></div>
-            <div className="creative-card" style={{ backgroundImage: "url('/assets/creatives/IMG_4598.jpg')" }}></div>
+            <div className="creative-card" style={{ backgroundImage: cssUrl(optimizedImage("/assets/creatives/IMG_4596.jpg", 828)) }}></div>
+            <div className="creative-card" style={{ backgroundImage: cssUrl(optimizedImage("/assets/creatives/IMG_4597.jpg", 828)) }}></div>
+            <div className="creative-card" style={{ backgroundImage: cssUrl(optimizedImage("/assets/creatives/IMG_4599.jpg", 828)) }}></div>
+            <div className="creative-card" style={{ backgroundImage: cssUrl(optimizedImage("/assets/creatives/IMG_4600.jpg", 828)) }}></div>
+            <div className="creative-card" style={{ backgroundImage: cssUrl(optimizedImage("/assets/creatives/IMG_4601.jpg", 828)) }}></div>
+            <div className="creative-card" style={{ backgroundImage: cssUrl(optimizedImage("/assets/creatives/IMG_4598.jpg", 828)) }}></div>
           </div>
         </div>
       </section>

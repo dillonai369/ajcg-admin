@@ -1,9 +1,10 @@
-import { SignIn } from "@clerk/nextjs";
+import { ClerkProvider, SignIn } from "@clerk/nextjs";
 
 export const metadata = { title: "Sign in — AJ Commercial Group" };
 
 export default function SignInPage() {
   return (
+    <ClerkProvider>
     <div
       style={{
         minHeight: "100vh",
@@ -38,5 +39,6 @@ export default function SignInPage() {
         />
       </div>
     </div>
+    </ClerkProvider>
   );
 }
