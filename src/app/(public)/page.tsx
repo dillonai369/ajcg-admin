@@ -7,13 +7,14 @@ import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
 import { optimizedImage, cssUrl } from "@/lib/image-url";
 import HeroVideo from "@/components/public/HeroVideo";
-import { preload } from "react-dom";
 
 export const dynamic = "force-dynamic";
 
 // Hero poster is the Largest Contentful Paint element on phones (the video is
-// not loaded there — see HeroVideo). Preloading it from the <head> saves the
-// browser discovering it only after React hydrates.
+// not loaded there — see HeroVideo). It's server-rendered as the first <img>
+// with fetchpriority="high" (~9 KB into the HTML), so the browser's preload
+// scanner requests it before any script runs. (react-dom's preload() was
+// tried first but did not emit into <head> on this dynamic route.)
 const HERO_POSTER = "/assets/city/IMG_4595.JPG";
 
 // NOTE: the title deliberately leads with the brand name. It previously read
@@ -40,7 +41,6 @@ export const metadata: Metadata = pageMetadata({
  * cta) is verbatim from index.html — the design must stay identical.
  */
 export default async function HomePage() {
-  preload(HERO_POSTER, { as: "image", fetchPriority: "high" });
   const [properties, posts] = await Promise.all([getProperties(), getPosts()]);
 
   const sold = properties.filter((p) => (p.status || "").toLowerCase() === "sold");
