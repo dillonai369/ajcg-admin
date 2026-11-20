@@ -33,7 +33,11 @@ const PUBLIC_HOSTS = new Set(["www.ajcommercialgroup.com", "ajcommercialgroup.co
 const PUBLIC_FORM_ENDPOINTS = new Set(["/api/inquiries", "/api/lead", "/api/resume"]);
 
 const withClerk = clerkMiddleware(async (auth, req) => {
-  if (isAdminRoute(req)) {
+  // /admin/sign-in is only a redirect stub to /sign-in. It must stay public:
+  // protecting it sends a signed-out visitor from /admin → /admin/sign-in →
+  // /admin/sign-in … forever wherever the sign-in URL setting still points
+  // at it (seen on the www project's preview, 2026-11-20).
+  if (isAdminRoute(req) && !req.nextUrl.pathname.startsWith("/admin/sign-in")) {
     await auth.protect();
   }
 });
