@@ -30,7 +30,16 @@ export async function getClerkIdentity(): Promise<{ email: string; fullName?: st
   const { userId } = await auth();
   if (!userId) return null;
   const user = await currentUser();
-  const email = user?.emailAddresses?.[0]?.emailAddress?.toLowerCase().trim();
+  // Admin approval is keyed on email, so the email we trust must be one the
+  // person has PROVEN they own: the account's primary address, and only if
+  // Clerk has verified it (emailed code or Google sign-in). This used to take
+  // `emailAddresses[0]` with no verification check — fine while Clerk enforces
+  // verify-at-sign-up, but one dashboard toggle away from letting someone type
+  // an approved person's address and walk in.
+  const primary =
+    user?.emailAddresses?.find((e) => e.id === user.primaryEmailAddressId) ?? user?.emailAddresses?.[0];
+  if (!primary || primary.verification?.status !== "verified") return null;
+  const email = primary.emailAddress?.toLowerCase().trim();
   if (!email) return null;
   const fullName =
     user?.fullName ||

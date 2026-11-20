@@ -3,6 +3,7 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { getProperty, saveProperty, deleteProperty } from "@/lib/data";
 import { requireApproved } from "@/lib/access";
 import { cleanPropertyInput, readJsonBody } from "@/lib/validate";
+import { audit } from "@/lib/audit";
 import { withListingSeoDefaults } from "@/lib/listing-seo";
 import type { Property } from "@/lib/types";
 
@@ -40,6 +41,10 @@ export async function PUT(req: Request, ctx: Ctx) {
     const updated = await saveProperty(slug, patch);
     if (!updated) return NextResponse.json({ error: "Not found" }, { status: 404 });
     invalidatePublicCaches(slug);
+    audit("listing.updated", `listing:${slug}`, gate.user.email, `${gate.user.email} edited listing ${updated.name}`, {
+      status: updated.status,
+      status_was: existing.status,
+    });
     return NextResponse.json(updated);
   } catch (err: unknown) {
     console.error(`PUT /api/properties/${slug} failed:`, err);
@@ -51,8 +56,20 @@ export async function DELETE(_req: Request, ctx: Ctx) {
   const gate = await requireApproved();
   if (gate.response) return gate.response;
   const { slug } = await ctx.params;
-  const ok = await deleteProperty(slug);
-  if (!ok) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  invalidatePublicCaches(slug);
-  return NextResponse.json({ ok: true });
+  try {
+    // Read first so the audit line can name what was removed.
+    const existing = await getProperty(slug);
+    const ok = await deleteProperty(slug);
+    if (!ok) return NextResponse.json({ error: "Not found" }, { status: 404 });
+    invalidatePublicCaches(slug);
+    audit("listing.deleted", `listing:${slug}`, gate.user.email, `${gate.user.email} deleted listing ${existing?.name ?? slug}`, {
+      name: existing?.name,
+      location: existing?.location,
+      status: existing?.status,
+    });
+    return NextResponse.json({ ok: true });
+  } catch (err: unknown) {
+    console.error(`DELETE /api/properties/${slug} failed:`, err);
+    return NextResponse.json({ error: "Could not delete listing" }, { status: 500 });
+  }
 }

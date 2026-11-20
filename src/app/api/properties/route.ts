@@ -4,6 +4,7 @@ import { getProperties, createProperty } from "@/lib/data";
 import { slugify } from "@/lib/utils";
 import { requireApproved } from "@/lib/access";
 import { cleanPropertyInput, readJsonBody } from "@/lib/validate";
+import { audit } from "@/lib/audit";
 import { withListingSeoDefaults } from "@/lib/listing-seo";
 import type { Property } from "@/lib/types";
 
@@ -22,7 +23,9 @@ export async function POST(req: Request) {
   if (!body) return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
 
   const clean = cleanPropertyInput(body);
-  const slug = (typeof clean.slug === "string" && clean.slug) || slugify(String(clean.name || "new-listing"));
+  // Always normalise the slug — it becomes a public URL and a storage/DB key,
+  // so a hand-posted value with spaces, slashes or capitals must not get through.
+  const slug = slugify((typeof clean.slug === "string" && clean.slug) || String(clean.name || "new-listing")) || "new-listing";
   try {
     // New listings get the house SEO template automatically (Mary's format);
     // anything typed into the SEO fields wins over it.
@@ -33,6 +36,7 @@ export async function POST(req: Request) {
     revalidatePath("/recently-sold");
     revalidatePath("/");
     revalidatePath(`/property/${slug}`);
+    audit("listing.created", `listing:${slug}`, gate.user.email, `${gate.user.email} added listing ${created.name}`);
     return NextResponse.json(created, { status: 201 });
   } catch (err: unknown) {
     console.error("POST /api/properties failed:", err);

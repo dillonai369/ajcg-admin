@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Upload, UserCircle } from "lucide-react";
+import { uploadImage } from "@/lib/client-upload";
 
 function slugify(s: string) {
   return s
@@ -38,13 +39,7 @@ export default function NewBrokerForm() {
   }
 
   async function uploadFile(file: File): Promise<string> {
-    const fd = new FormData();
-    fd.append("file", file);
-    fd.append("bucket", "broker-photos");
-    const r = await fetch("/api/upload", { method: "POST", body: fd });
-    if (!r.ok) throw new Error(await r.text());
-    const { url } = (await r.json()) as { url: string };
-    return url;
+    return uploadImage(file, "broker-photos");
   }
 
   async function handleUpload(e: React.ChangeEvent<HTMLInputElement>, target: "hero" | "card") {

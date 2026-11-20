@@ -7,6 +7,7 @@ import type { Post } from "@/lib/types";
 import { Field, FieldInput, FieldSelect, FieldTextarea, FieldLabel } from "@/components/ui/FieldInput";
 import BlockEditor from "@/components/BlockEditor";
 import { AIBlogPanel } from "@/components/AIAssistPanel";
+import DeleteButton from "@/components/DeleteButton";
 
 const CATEGORY_OPTIONS = [
   "Market Updates",
@@ -195,6 +196,14 @@ export default function PostEditor({ initial }: { initial: Post }) {
               {saving ? "Saving…" : "Save post"}
             </button>
           </div>
+
+          <DeleteButton
+            endpoint={`/api/posts/${form.slug}`}
+            label={form.title}
+            what="post"
+            consequence="It comes off the blog and the sitemap. To only hide it, set the status to Draft instead."
+            redirectTo="/admin/blog"
+          />
 
           <div className="card p-5">
             <h4 className="font-semibold text-sm mb-3">Author</h4>

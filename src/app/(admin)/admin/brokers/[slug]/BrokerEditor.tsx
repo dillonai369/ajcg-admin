@@ -6,6 +6,8 @@ import { ArrowLeft, UserCircle, Phone, BookOpen, Award, GraduationCap, TrendingU
 import type { Broker } from "@/lib/types";
 import { Field, FieldInput, FieldSelect, FieldTextarea, FieldLabel } from "@/components/ui/FieldInput";
 import { initials, resolveImageUrl } from "@/lib/utils";
+import DeleteButton from "@/components/DeleteButton";
+import { uploadImage } from "@/lib/client-upload";
 
 // Lightweight property shape used for the read-only "Recent transactions"
 // preview — pulled from listings where this broker is in broker_slugs.
@@ -87,12 +89,7 @@ export default function BrokerEditor({
     setUploading(true);
     setError(null);
     try {
-      const fd = new FormData();
-      fd.append("file", file);
-      fd.append("bucket", "broker-photos");
-      const r = await fetch("/api/upload", { method: "POST", body: fd });
-      if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error || "Upload failed");
-      const { url } = (await r.json()) as { url: string };
+      const url = await uploadImage(file, "broker-photos");
       patch({ photo_url: url, card_photo_url: url });
     } catch (err) {
       setError((err as Error).message);
@@ -334,7 +331,7 @@ export default function BrokerEditor({
 
           <div className="card p-5">
             <h4 className="font-semibold text-sm mb-3">Profile URL</h4>
-            <div className="text-xs font-mono bg-slate-50 border border-slate-200 rounded px-2 py-1.5 truncate">/brokers/{form.slug}</div>
+            <div className="text-xs font-mono bg-slate-50 border border-slate-200 rounded px-2 py-1.5 truncate">/broker/{form.slug}</div>
           </div>
 
           <div className="card p-5">
@@ -346,6 +343,14 @@ export default function BrokerEditor({
               <Field label="Avg. days on market"><FieldInput value={String(form.avg_days_on_market ?? "")} onChange={(e) => patch({ avg_days_on_market: e.target.value })} /></Field>
             </div>
           </div>
+
+          <DeleteButton
+            endpoint={`/api/brokers/${form.slug}`}
+            label={form.name}
+            what="broker"
+            consequence="Their profile page and team card come off the website; listings they were on simply stop showing them. To only hide them, untick “Show on team page” instead."
+            redirectTo="/admin/brokers"
+          />
         </div>
       </div>
     </>

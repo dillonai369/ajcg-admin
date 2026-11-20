@@ -8,13 +8,34 @@ import PhotoUpload from "@/components/PhotoUpload";
 import { Field, FieldInput, FieldSelect, FieldTextarea, FieldLabel } from "@/components/ui/FieldInput";
 import { AIInlineAssist } from "@/components/AIAssistPanel";
 import { buildListingMetaTitle, buildListingMetaDescription } from "@/lib/listing-seo";
+import DeleteButton from "@/components/DeleteButton";
 
-const STATUS_OPTIONS = ["Coming Soon", "For Sale", "Under Contract", "Sold", "Draft"];
+// Stored values are lowercase — that is what the database's public-read rule
+// and every existing row use ("sold", "for sale", ...). This list used to be
+// title-case labels with no values, so a listing saved as "sold" matched no
+// option and the dropdown silently displayed "Coming Soon" for every sold
+// listing (and would have saved "Sold", which the database rule doesn't match).
+const STATUS_OPTIONS: Array<{ value: string; label: string }> = [
+  { value: "coming soon", label: "Coming Soon" },
+  { value: "for sale", label: "For Sale" },
+  { value: "under contract", label: "Under Contract" },
+  { value: "sold", label: "Sold" },
+  { value: "draft", label: "Draft (hidden from website)" },
+];
+const STATUS_VALUES = new Set(STATUS_OPTIONS.map((o) => o.value));
 const TYPE_OPTIONS = ["Multifamily", "Mixed-Use", "Retail", "Office", "Industrial"];
+const CLASS_OPTIONS = ["Class A", "Class B", "Class C"];
+const HEATING_OPTIONS = ["Boiler / steam", "Forced air", "Hydronic", "Other"];
+
+/** Keep an unexpected saved value selectable instead of silently showing another option. */
+function withCurrent(options: string[], current?: string | null): string[] {
+  return current && !options.includes(current) ? [current, ...options] : options;
+}
 
 export default function ListingEditor({ initial }: { initial: Property }) {
   const [form, setForm] = useState<Property>({
     ...initial,
+    status: (initial.status || "draft").toLowerCase().trim(),
     highlights: initial.highlights ?? [],
     images: initial.images ?? [],
   });
@@ -90,7 +111,11 @@ export default function ListingEditor({ initial }: { initial: Property }) {
           </Link>
           <div>
             <h1 className="text-lg font-semibold">{form.name}</h1>
-            <p className="text-xs text-slate-500">Edits publish to ajcommercialgroup.com/listings</p>
+            <p className="text-xs text-slate-500">
+              {form.status === "draft"
+                ? "Draft — hidden from the website until you change the status"
+                : `Live at ajcommercialgroup.com/property/${form.slug}`}
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -153,12 +178,13 @@ export default function ListingEditor({ initial }: { initial: Property }) {
             <div className="grid grid-cols-2 gap-4 mb-4">
               <Field label="Status">
                 <FieldSelect value={form.status} onChange={(e) => patch({ status: e.target.value })}>
-                  {STATUS_OPTIONS.map((o) => <option key={o}>{o}</option>)}
+                  {!STATUS_VALUES.has(form.status) ? <option value={form.status}>{form.status}</option> : null}
+                  {STATUS_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
                 </FieldSelect>
               </Field>
               <Field label="Property type">
                 <FieldSelect value={form.type || "Multifamily"} onChange={(e) => patch({ type: e.target.value })}>
-                  {TYPE_OPTIONS.map((o) => <option key={o}>{o}</option>)}
+                  {withCurrent(TYPE_OPTIONS, form.type).map((o) => <option key={o}>{o}</option>)}
                 </FieldSelect>
               </Field>
             </div>
@@ -192,16 +218,20 @@ export default function ListingEditor({ initial }: { initial: Property }) {
               <Field label="Year built"><FieldInput value={form.year_built ?? ""} onChange={(e) => patch({ year_built: e.target.value })} /></Field>
               <Field label="Stories"><FieldInput value={form.stories ?? ""} onChange={(e) => patch({ stories: e.target.value })} /></Field>
               <Field label="Building class">
-                <FieldSelect value={form.building_class ?? "Class B"} onChange={(e) => patch({ building_class: e.target.value })}>
-                  <option>Class A</option><option>Class B</option><option>Class C</option>
+                {/* Blank is a real choice: this used to display "Class B" for listings
+                    that had no class saved, so the editor showed a value the website didn't. */}
+                <FieldSelect value={form.building_class ?? ""} onChange={(e) => patch({ building_class: e.target.value })}>
+                  <option value="">— Not set —</option>
+                  {withCurrent(CLASS_OPTIONS, form.building_class).map((o) => <option key={o}>{o}</option>)}
                 </FieldSelect>
               </Field>
             </div>
             <div className="grid grid-cols-3 gap-4">
               <Field label="Parking spaces"><FieldInput value={form.parking ?? ""} onChange={(e) => patch({ parking: e.target.value })} /></Field>
               <Field label="Heating">
-                <FieldSelect value={form.heating ?? "Forced air"} onChange={(e) => patch({ heating: e.target.value })}>
-                  <option>Boiler / steam</option><option>Forced air</option><option>Hydronic</option><option>Other</option>
+                <FieldSelect value={form.heating ?? ""} onChange={(e) => patch({ heating: e.target.value })}>
+                  <option value="">— Not set —</option>
+                  {withCurrent(HEATING_OPTIONS, form.heating).map((o) => <option key={o}>{o}</option>)}
                 </FieldSelect>
               </Field>
               <Field label="Year renovated"><FieldInput value={form.year_renovated ?? ""} onChange={(e) => patch({ year_renovated: e.target.value })} placeholder="—" /></Field>
@@ -269,8 +299,10 @@ export default function ListingEditor({ initial }: { initial: Property }) {
 
         <div className="space-y-4">
           <div className="card p-5">
-            <h4 className="font-semibold text-sm mb-3">Listed by</h4>
-            <p className="text-xs text-slate-500 mb-3">Assign one or more brokers</p>
+            <h4 className="font-semibold text-sm mb-3">Brokers on this deal</h4>
+            <p className="text-xs text-slate-500 mb-3">
+              The first broker shows as &ldquo;Transacting Broker&rdquo; on the website; the rest show as &ldquo;Co-Broker&rdquo;.
+            </p>
             {assignedSlugs.length > 0 ? (
               <div className="space-y-2 mb-3">
                 {assignedSlugs.map((slug) => {
@@ -374,6 +406,14 @@ export default function ListingEditor({ initial }: { initial: Property }) {
               Upload document (coming soon)
             </button>
           </div>
+
+          <DeleteButton
+            endpoint={`/api/properties/${form.slug}`}
+            label={form.name}
+            what="listing"
+            consequence="It comes off the website, Recently Sold, every broker's transaction list, and the sitemap."
+            redirectTo="/admin/listings"
+          />
         </div>
       </div>
     </>

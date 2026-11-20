@@ -221,7 +221,9 @@ export default async function PropertyPage({ params }: { params: Promise<{ slug:
               </div>
               <div className="property-brokers-cards">
                 {team.map((b, i) => {
-                  const label = i === 0 ? "Listing Broker" : "Co-Broker";
+                  // Wording per the client (Mary, 2026-11): lead broker is the "Transacting
+                  // Broker"; everyone after stays "Co-Broker".
+                  const label = i === 0 ? "Transacting Broker" : "Co-Broker";
                   const photo = brokerCardPhoto(b);
                   return (
                     <Link key={b.slug} href={`/broker/${b.slug}`} className="property-broker property-broker-link">

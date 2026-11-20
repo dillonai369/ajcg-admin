@@ -36,7 +36,7 @@ export default async function BrokersPage() {
                 <UserPlus className="w-6 h-6 text-slate-400" />
               </div>
               <div className="font-medium text-sm">Add a broker</div>
-              <div className="text-xs text-slate-500 mt-1">Auto-publishes to /brokers</div>
+              <div className="text-xs text-slate-500 mt-1">Auto-publishes to the Our Team page</div>
             </div>
           </Link>
         </div>

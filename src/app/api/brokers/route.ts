@@ -4,6 +4,7 @@ import { getBrokers, createBroker } from "@/lib/data";
 import { slugify } from "@/lib/utils";
 import { requireApproved } from "@/lib/access";
 import { cleanBrokerInput, readJsonBody } from "@/lib/validate";
+import { audit } from "@/lib/audit";
 
 export async function GET() {
   const gate = await requireApproved();
@@ -20,13 +21,16 @@ export async function POST(req: Request) {
   if (!body) return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
 
   const clean = cleanBrokerInput(body);
-  const slug = (typeof clean.slug === "string" && clean.slug) || slugify(String(clean.name || "new-broker"));
+  // Always normalise the slug — it becomes a public URL and a storage/DB key,
+  // so a hand-posted value with spaces, slashes or capitals must not get through.
+  const slug = slugify((typeof clean.slug === "string" && clean.slug) || String(clean.name || "new-broker")) || "new-broker";
   try {
     const created = await createBroker({ ...clean, slug });
     revalidateTag("brokers");
     revalidatePath("/our-team");
     revalidatePath("/");
     revalidatePath(`/broker/${slug}`);
+    audit("broker.created", `broker:${slug}`, gate.user.email, `${gate.user.email} added broker ${created.name}`);
     return NextResponse.json(created, { status: 201 });
   } catch (err: unknown) {
     console.error("POST /api/brokers failed:", err);

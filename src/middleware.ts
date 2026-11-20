@@ -27,6 +27,11 @@ const needsClerk = createRouteMatcher([
   "/api/(.*)",
 ]);
 
+const ADMIN_HOST = "app.ajcommercialgroup.com";
+const PUBLIC_HOSTS = new Set(["www.ajcommercialgroup.com", "ajcommercialgroup.com"]);
+/** The only API routes the public website's forms call (see SmartForm.tsx). */
+const PUBLIC_FORM_ENDPOINTS = new Set(["/api/inquiries", "/api/lead", "/api/resume"]);
+
 const withClerk = clerkMiddleware(async (auth, req) => {
   if (isAdminRoute(req)) {
     await auth.protect();
@@ -56,6 +61,33 @@ export default function middleware(req: NextRequest, event: NextFetchEvent) {
       const url = req.nextUrl.clone();
       url.pathname = "/admin";
       return NextResponse.redirect(url);
+    }
+  }
+
+  // The PUBLIC hosts (www / apex) must not be a second way into the admin.
+  //
+  // The same code deploys to two Vercel projects. Only the app. project holds
+  // the production login keys; the www project still carries Clerk
+  // *development* keys. That left www.ajcommercialgroup.com/admin and the
+  // admin APIs reachable behind a dev-mode login in front of the production
+  // database. Nobody is meant to sign in there, so on the public hosts:
+  //   • admin / sign-in pages redirect to the real admin on app.
+  //   • every API call except the three the public forms use returns 404.
+  // Previews (*.vercel.app) and localhost are untouched.
+  if (PUBLIC_HOSTS.has(host)) {
+    if (
+      pathname.startsWith("/admin") ||
+      pathname.startsWith("/sign-in") ||
+      pathname.startsWith("/sign-up") ||
+      pathname.startsWith("/pending-approval")
+    ) {
+      return NextResponse.redirect(`https://${ADMIN_HOST}${pathname}${req.nextUrl.search}`);
+    }
+    if (pathname.startsWith("/api/")) {
+      const isPublicForm = req.method === "POST" && PUBLIC_FORM_ENDPOINTS.has(pathname.replace(/\/$/, ""));
+      if (!isPublicForm && req.method !== "OPTIONS") {
+        return NextResponse.json({ error: "not found" }, { status: 404 });
+      }
     }
   }
 

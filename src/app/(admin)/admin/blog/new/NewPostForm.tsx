@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Upload, FileText } from "lucide-react";
+import { uploadImage } from "@/lib/client-upload";
 
 function slugify(s: string) {
   return s
@@ -39,12 +40,7 @@ export default function NewPostForm() {
     if (!file) return;
     setUploading(true);
     try {
-      const fd = new FormData();
-      fd.append("file", file);
-      fd.append("bucket", "blog-images");
-      const r = await fetch("/api/upload", { method: "POST", body: fd });
-      if (!r.ok) throw new Error(await r.text());
-      const { url } = (await r.json()) as { url: string };
+      const url = await uploadImage(file, "blog-images");
       setHeroImage(url);
     } catch (err) {
       alert(`Upload failed: ${err instanceof Error ? err.message : err}`);

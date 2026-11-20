@@ -15,6 +15,11 @@ import { notifyNewLead } from "@/lib/notify";
  * GET /api/inquiries — admin only. Returns leads for the inbox, with optional
  * ?status=, ?type=, ?q= filters.
  */
+function slugOrUndefined(v: unknown): string | undefined {
+  const s = typeof v === "string" ? v.trim() : "";
+  return /^[a-z0-9][a-z0-9-]{0,120}$/.test(s) ? s : undefined;
+}
+
 export async function POST(req: NextRequest) {
   let body: Record<string, unknown>;
   try {
@@ -23,16 +28,28 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const str = (v: unknown) => (typeof v === "string" ? v.trim() : "");
-  const name = str(body.name);
-  const email = str(body.email);
-  const phone = str(body.phone);
-  const message = str(body.message);
-  const formType = str(body.form_type) || str(body.source) || "contact";
-  const details =
-    body.details && typeof body.details === "object" && !Array.isArray(body.details)
-      ? (body.details as Record<string, unknown>)
-      : {};
+  // Size caps. This endpoint is public and writes to the database, so nothing a
+  // caller sends is stored at unbounded length (a single POST could otherwise
+  // park megabytes in one row and in the admin inbox). Limits are far above
+  // anything a real form produces.
+  const str = (v: unknown, max = 500) => (typeof v === "string" ? v.trim().slice(0, max) : "");
+  const name = str(body.name, 200);
+  const email = str(body.email, 320);
+  const phone = str(body.phone, 50);
+  const message = str(body.message, 10000);
+  const rawType = str(body.form_type, 40) || str(body.source, 40) || "contact";
+  // Only known form types are stored; anything else is filed as a general contact.
+  const formType = rawType in FORM_TYPES ? rawType : "contact";
+  const details: Record<string, unknown> = {};
+  if (body.details && typeof body.details === "object" && !Array.isArray(body.details)) {
+    for (const [k, v] of Object.entries(body.details as Record<string, unknown>).slice(0, 60)) {
+      const key = k.slice(0, 80);
+      if (typeof v === "string") details[key] = v.slice(0, 5000);
+      else if (typeof v === "number" || typeof v === "boolean") details[key] = v;
+      else if (Array.isArray(v)) details[key] = v.slice(0, 50).map((x) => String(x).slice(0, 500));
+      // nested objects are dropped — no form sends them
+    }
+  }
 
   if (!name) {
     return NextResponse.json({ error: "Please enter your name." }, { status: 400 });
@@ -87,9 +104,11 @@ export async function POST(req: NextRequest) {
     utm_campaign: str(body.utm_campaign) || undefined,
     utm_content: str(body.utm_content) || undefined,
     sms_consent: body.sms_consent === true || body.sms_consent === "true" || body.sms_consent === "on",
-    property_slug: str(body.property_slug) || undefined,
-    broker_slug: str(body.broker_slug) || undefined,
-    resume_path: str(body.resume_path) || undefined,
+    property_slug: slugOrUndefined(body.property_slug),
+    broker_slug: slugOrUndefined(body.broker_slug),
+    // Only a path shaped like the ones /api/resume hands out is kept, so a
+    // caller can't point the admin's "view résumé" link at some other object.
+    resume_path: /^\d{4}-\d{2}-\d{2}\/\d+-[a-zA-Z0-9._-]+\.(pdf|docx|doc)$/.test(str(body.resume_path)) ? str(body.resume_path) : undefined,
     status: "new",
   };
 
